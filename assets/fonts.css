@@ -1,0 +1,20 @@
+/* ============================================
+   FONTS - DESCARGAR Y REGISTRAR FUENTES
+   Este archivo descarga las familias tipográficas
+   y las guarda en variables de tipo de letra.
+   Debe cargarse ANTES que themes.css y global.css
+   para que las variables estén disponibles.
+   ============================================ */
+
+/* Descarga Poppins desde Google Fonts
+   (pesos: 400 normal, 500 medium, 600 semibold, 700 bold) */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
+/* ============================================
+   VARIABLES DE TIPOGRAFÍA
+   Guarda las familias de fuentes descargadas.
+   themes.css y global.css las consumen vía var().
+   ============================================ */
+:root {
+  --font-primary: "Poppins", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}

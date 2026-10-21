@@ -1,0 +1,248 @@
+/* ============================================
+   ESTILOS GLOBALES DEL SISTEMA
+   Componentes que NO se pueden implementar solo con Bootstrap.
+   Consume las variables definidas en themes.css.
+   ============================================ */
+
+/* ============================================
+   LAYOUT / RESPONSIVE
+   Red de seguridad: evita scroll horizontal de
+   página por contenido que desborda (pestañas
+   flex-nowrap, tablas anchas, etc.).
+   ============================================ */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Utilidad: permite a flex items encogerse por
+   debajo de su contenido. No existe en Bootstrap. */
+.min-width-0 {
+  min-width: 0 !important;
+}
+
+/* Columna fija (sticky) en tablas anchas: la primera
+   columna queda visible al scrollear horizontalmente.
+   Uso: #nombreTabla thead th:first-child / td:first-child
+   (aplicado a la matriz de permisos). */
+#tablaPermisos thead th:first-child,
+#tablaPermisos tbody tr:not(.table-secondary) td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: var(--bs-table-bg, #fff);
+  box-shadow: inset -1px 0 0 var(--color-border);
+}
+
+#tablaPermisos tbody tr:hover td:first-child {
+  background-color: var(--bs-table-hover-bg, var(--bs-table-bg, #fff));
+}
+
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn-primary {
+  --bs-btn-bg: var(--color-primary);
+  --bs-btn-border-color: var(--color-primary);
+  --bs-btn-hover-bg: var(--color-primary-dark);
+  --bs-btn-hover-border-color: var(--color-primary-dark);
+  --bs-btn-active-bg: var(--color-primary-dark);
+  --bs-btn-active-border-color: var(--color-primary-dark);
+  --bs-btn-disabled-bg: var(--color-primary);
+  --bs-btn-disabled-border-color: var(--color-primary);
+  --bs-btn-focus-shadow-rgb: var(--color-primary-rgb);
+}
+
+/* ============================================
+   TARJETAS (CARD) CON EL TEMA
+   ============================================ */
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--card-border-radius);
+  background-color: var(--color-bg-card);
+  box-shadow: var(--card-shadow);
+}
+
+/* ============================================
+   TARJETAS KPI DEL DASHBOARD
+   ============================================ */
+.kpi-card {
+  border: none;
+  overflow: hidden;
+  transition: transform var(--transition-speed) var(--transition-ease),
+              box-shadow var(--transition-speed) var(--transition-ease);
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.kpi-card .kpi-accent {
+  height: 4px;
+  width: 100%;
+}
+
+.kpi-card .kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--card-border-radius);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.kpi-card .kpi-icon.bg-primary-soft {
+  background-color: rgba(13, 110, 253, 0.12);
+  color: var(--color-primary);
+}
+
+.kpi-card .kpi-icon.bg-success-soft {
+  background-color: rgba(25, 135, 84, 0.12);
+  color: var(--color-success);
+}
+
+.kpi-card .kpi-icon.bg-warning-soft {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: var(--color-warning);
+}
+
+.kpi-card .kpi-icon.bg-danger-soft {
+  background-color: rgba(220, 53, 69, 0.12);
+  color: var(--color-danger);
+}
+
+/* ============================================
+   OPCIONES DE SELECCIÓN DE TEMA
+   ============================================ */
+.tema-opcion {
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-bg-card);
+  transition: border-color var(--transition-speed) var(--transition-ease),
+              transform var(--transition-speed) var(--transition-ease);
+}
+
+.tema-opcion:hover {
+  transform: translateY(-2px);
+}
+
+.tema-opcion.border-primary {
+  border-color: var(--color-primary);
+}
+
+/* ============================================
+   TEMA OSCURO - OVERRIDES DE COMPONENTES
+   Bootstrap y otros componentes usan colores fijos
+   que no se adaptan con las variables. Se corrigen
+   aquí solo cuando el tema oscuro está activo.
+   ============================================ */
+[data-theme="dark"] {
+  /* Cabeceras de tarjetas que usan bg-white */
+  .card-header.bg-white {
+    background-color: var(--color-surface) !important;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Formularios */
+  .form-control,
+  .form-select {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    background-color: var(--color-surface);
+  }
+
+  .form-control::placeholder {
+    color: var(--color-text-secondary);
+  }
+
+  /* Tablas */
+  .table {
+    --bs-table-color: var(--color-text-primary);
+    --bs-table-bg: var(--color-bg-card);
+    --bs-table-border-color: var(--color-border);
+  }
+
+  .table thead th {
+    color: var(--color-text-secondary);
+    border-color: var(--color-border);
+  }
+
+  .table-hover tbody tr:hover {
+    --bs-table-hover-bg: var(--color-surface);
+    --bs-table-hover-color: var(--color-text-primary);
+  }
+
+  /* Modales (Bootstrap usa fondo blanco fijo) */
+  .modal-content {
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  .modal-header {
+    border-color: var(--color-border);
+  }
+
+  .modal-footer {
+    border-color: var(--color-border);
+  }
+
+  /* Dropdown (dentro de items oscuros) */
+  .dropdown-menu {
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+  }
+
+  .dropdown-item {
+    color: var(--color-text-primary);
+  }
+
+  .dropdown-item:hover,
+  .dropdown-item:focus {
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  /* Pestañas (nav-tabs) */
+  .nav-tabs {
+    border-color: var(--color-border);
+  }
+
+  .nav-tabs .nav-link {
+    color: var(--color-text-secondary);
+    border: 1px solid transparent;
+  }
+
+  .nav-tabs .nav-link:hover {
+    border-color: var(--color-border);
+    color: var(--color-text-primary);
+  }
+
+  .nav-tabs .nav-link.active {
+    background-color: var(--color-bg-card);
+    border-color: var(--color-border);
+    border-bottom-color: var(--color-bg-card);
+    color: var(--color-text-primary);
+  }
+
+  /* Switches y checkbox */
+  .form-check-input {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+  }
+
+  .form-check-input:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+}
+
+

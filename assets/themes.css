@@ -1,0 +1,99 @@
+/* ============================================
+   THEMES - SOLO VARIABLES
+   Este archivo define únicamente las variables de tema.
+   Los valores los define cada theme; el mapeo a las
+   variables de Bootstrap se declara UNA sola vez abajo.
+   ============================================ */
+
+/* ============================================
+   TEMA CLARO (BASE)
+   ============================================ */
+:root {
+  /* Tipografía: --font-primary se define en fonts.css */
+  --font-size-base: 14px;
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+
+  /* Colores principales */
+  --color-primary: #0d6efd;
+  --color-secondary: #6c757d;
+  --color-success: #198754;
+  --color-danger: #dc3545;
+  --color-warning: #ffc107;
+  --color-info: #0dcaf0;
+
+  /* Colores de fondo y texto */
+  --color-bg-body: #f8f9fa;
+  --color-bg-card: #ffffff;
+  --color-surface: #f1f3f5;
+  --color-text-primary: #212529;
+  --color-text-secondary: #6c757d;
+  --color-border: #dee2e6;
+
+  /* Colores por componente */
+  --color-primary-dark: #0a58ca;
+
+  /* Componentes: tarjetas */
+  --card-border-radius: 0.5rem;
+  --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+
+  /* Espaciados y tamaños */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Transiciones */
+  --transition-speed: 0.3s;
+  --transition-ease: ease-in-out;
+}
+
+/* ============================================
+   TEMA OSCURO
+   Solo define valores. El mapeo --bs-* de abajo
+   los recoge automáticamente vía var().
+   ============================================ */
+[data-theme="oscuro"] {
+  --color-primary: #3d8bfd;
+  --color-secondary: #6c757d;
+  --color-primary-dark: #2f6ee0;
+  --color-bg-body: #0f1216;
+  --color-bg-card: #1a1f27;
+  --color-surface: #242b35;
+  --color-text-primary: #e9ecef;
+  --color-text-secondary: #9aa3ad;
+  --color-border: #2c333d;
+
+  /* Componentes: tarjetas (sombra más intensa en oscuro) */
+  --card-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   MAPEO A VARIABLES DE BOOTSTRAP
+   Se declara UNA sola vez, fuera de los themes,
+   y se ubica al final para quedar explícito que
+   precede/sigue a los valores de cada tema.
+   Como apunta a var(--color-*), se resuelve en el
+   punto de uso y toma automáticamente el valor del
+   tema activo (claro u oscuro). No se debe duplicar.
+   ============================================ */
+:root {
+  --bs-primary: var(--color-primary);
+  --bs-secondary: var(--color-secondary);
+  --bs-success: var(--color-success);
+  --bs-danger: var(--color-danger);
+  --bs-warning: var(--color-warning);
+  --bs-info: var(--color-info);
+
+  --bs-body-bg: var(--color-bg-body);
+  --bs-body-color: var(--color-text-primary);
+  --bs-body-font-family: var(--font-primary);
+  --bs-body-font-size: var(--font-size-base);
+  --bs-border-color: var(--color-border);
+
+  --bs-secondary-color: var(--color-text-secondary);
+  --bs-emphasis-color: var(--color-text-primary);
+  --bs-link-color: var(--color-primary);
+  --bs-link-hover-color: var(--color-primary-dark);
+}

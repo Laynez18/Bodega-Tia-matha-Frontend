@@ -1,0 +1,1017 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mantenimiento - Mini Market</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="../assets/fonts.css" rel="stylesheet" />
+    <link href="../assets/themes.css" rel="stylesheet" />
+    <link href="../assets/global.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("mm-theme") === "oscuro") {
+            document.documentElement.setAttribute("data-theme", "oscuro");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="d-flex">
+      <!-- ============ SIDEBAR ============ -->
+      <aside
+        class="sidebar-desktop d-none d-md-flex flex-column flex-shrink-0 bg-dark text-white p-3"
+        style="width: 250px; height: 100vh"
+      >
+              <!-- Logo / Nombre -->
+        <a
+          href="#"
+          class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none"
+        >
+          <i class="bi bi-shop fs-4 me-2"></i>
+          <span class="fs-5 fw-semibold">Mini Market</span>
+        </a>
+        <hr />
+
+      <!-- Accordion Procesos -->
+      <div class="accordion" id="accordionProcesos">
+        <!-- Grupo 1: Contenedor 1 -->
+        <div class="accordion-item bg-transparent border-0 mb-2">
+          <h2 class="accordion-header mb-0">
+            <button class="accordion-button collapsed bg-transparent text-white text-start w-100" type="button" data-bs-toggle="collapse" data-bs-target="#procesosGrupo1" aria-expanded="false" aria-controls="procesosGrupo1">
+              Contenedor 1 <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </h2>
+          <div id="procesosGrupo1" class="accordion-collapse collapse" data-bs-parent="#accordionProcesos">
+            <div class="accordion-body p-2">
+              <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a href="../inicio/inicio.html" class="nav-link text-white">
+              <i class="bi bi-house me-2"></i>
+              Inicio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../seguridad/seguridad.html" class="nav-link text-white">
+              <i class="bi bi-shield-lock me-2"></i>
+              Seguridad
+            </a>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Grupo 2: Contenedor 2 -->
+        <div class="accordion-item bg-transparent border-0 mb-2">
+          <h2 class="accordion-header mb-0">
+            <button class="accordion-button collapsed bg-transparent text-white text-start w-100" type="button" data-bs-toggle="collapse" data-bs-target="#procesosGrupo2" aria-expanded="false" aria-controls="procesosGrupo2">
+              Contenedor 2 <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </h2>
+          <div id="procesosGrupo2" class="accordion-collapse collapse" data-bs-parent="#accordionProcesos">
+            <div class="accordion-body p-2">
+              <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a
+              href="../mantenimiento/mantenimiento.html"
+              class="nav-link active"
+              aria-current="page"
+            >
+              <i class="bi bi-gear me-2"></i>
+              Mantenimiento
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../compras/compras.html" class="nav-link text-white">
+              <i class="bi bi-truck me-2"></i>
+              Compras
+            </a>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Grupo 3: Contenedor 3 -->
+        <div class="accordion-item bg-transparent border-0 mb-2">
+          <h2 class="accordion-header mb-0">
+            <button class="accordion-button collapsed bg-transparent text-white text-start w-100" type="button" data-bs-toggle="collapse" data-bs-target="#procesosGrupo3" aria-expanded="false" aria-controls="procesosGrupo3">
+              Contenedor 3 <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </h2>
+          <div id="procesosGrupo3" class="accordion-collapse collapse" data-bs-parent="#accordionProcesos">
+            <div class="accordion-body p-2">
+              <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a href="../inventario/inventario.html" class="nav-link text-white">
+              <i class="bi bi-box-seam me-2"></i>
+              Inventario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../ventas/ventas.html" class="nav-link text-white">
+              <i class="bi bi-basket me-2"></i>
+              Ventas
+            </a>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <!-- Grupo 4: Contenedor 4 -->
+        <div class="accordion-item bg-transparent border-0 mb-2">
+          <h2 class="accordion-header mb-0">
+            <button class="accordion-button collapsed bg-transparent text-white text-start w-100" type="button" data-bs-toggle="collapse" data-bs-target="#procesosGrupo4" aria-expanded="false" aria-controls="procesosGrupo4">
+              Contenedor 4 <i class="bi bi-chevron-down float-end"></i>
+            </button>
+          </h2>
+          <div id="procesosGrupo4" class="accordion-collapse collapse" data-bs-parent="#accordionProcesos">
+            <div class="accordion-body p-2">
+              <ul class="nav nav-pills flex-column">
+          <li class="nav-item">
+            <a href="../creditos/creditos.html" class="nav-link text-white">
+              <i class="bi bi-hand-index-thumb me-2"></i>
+              Créditos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../caja/caja.html" class="nav-link text-white">
+              <i class="bi bi-cash-coin me-2"></i>
+              Caja
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../reportes/reportes.html" class="nav-link text-white">
+              <i class="bi bi-bar-chart me-2"></i>
+              Reportes
+            </a>
+          </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+
+      </aside>
+
+      <!-- ============ MENÚ MÓVIL (offcanvas) ============ -->
+      <div
+        class="offcanvas offcanvas-start bg-dark text-white"
+        tabindex="-1"
+        id="menuMovil"
+        aria-labelledby="menuMovilLabel"
+        style="width: 250px"
+      >
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title text-white" id="menuMovilLabel">
+            <i class="bi bi-shop me-2"></i>Mini Market
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <hr class="my-0" />
+        <div class="offcanvas-body d-flex flex-column">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+              <a href="../inicio/inicio.html" class="nav-link text-white">
+                <i class="bi bi-house me-2"></i>
+                Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../seguridad/seguridad.html" class="nav-link text-white">
+                <i class="bi bi-shield-lock me-2"></i>
+                Seguridad
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="../mantenimiento/mantenimiento.html"
+                class="nav-link active"
+                aria-current="page"
+              >
+                <i class="bi bi-gear me-2"></i>
+                Mantenimiento
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../compras/compras.html" class="nav-link text-white">
+                <i class="bi bi-truck me-2"></i>
+                Compras
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="../inventario/inventario.html"
+                class="nav-link text-white"
+              >
+                <i class="bi bi-box-seam me-2"></i>
+                Inventario
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../ventas/ventas.html" class="nav-link text-white">
+                <i class="bi bi-basket me-2"></i>
+                Ventas
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../creditos/creditos.html" class="nav-link text-white">
+                <i class="bi bi-hand-index-thumb me-2"></i>
+                Créditos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../caja/caja.html" class="nav-link text-white">
+                <i class="bi bi-cash-coin me-2"></i>
+                Caja
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../reportes/reportes.html" class="nav-link text-white">
+                <i class="bi bi-bar-chart me-2"></i>
+                Reportes
+              </a>
+            </li>
+          </ul>
+          <hr />
+          <div class="dropdown">
+            <a
+              href="#"
+              class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person-circle fs-4 me-2"></i>
+              <strong>ADMIN</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalConfiguracion"
+                  ><i class="bi bi-gear me-2"></i>Configuración</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CONTENIDO ============ -->
+      <main class="flex-grow-1 min-width-0 p-3 p-md-4">
+        <!-- Barra superior para móvil -->
+        <header
+          class="d-md-none d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 border-bottom mb-3"
+        >
+          <button
+            class="btn btn-dark"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#menuMovil"
+          >
+            <i class="bi bi-list"></i>
+            Menú
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-semibold">Mini Market</span>
+            <i class="bi bi-person-circle fs-4 text-secondary"></i>
+          </div>
+        </header>
+        <div class="d-flex align-items-center mb-4">
+          <h4 class="mb-0">Mantenimiento</h4>
+        </div>
+
+        <!-- Pestañas de secciones -->
+        <ul
+          class="nav nav-tabs mb-3 flex-nowrap overflow-auto"
+          id="tabMantenimiento"
+          role="tablist"
+        >
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="tab-productos"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-productos"
+              type="button"
+              role="tab"
+            >
+              Productos
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-empleados"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-empleados"
+              type="button"
+              role="tab"
+            >
+              Empleados
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-clientes"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-clientes"
+              type="button"
+              role="tab"
+            >
+              Clientes
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-proveedores"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-proveedores"
+              type="button"
+              role="tab"
+            >
+              Proveedores
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-categorias"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-categorias"
+              type="button"
+              role="tab"
+            >
+              Categorías
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="tabMantenimientoContenido">
+          <!-- Productos -->
+          <div
+            class="tab-pane fade show active"
+            id="pane-productos"
+            role="tabpanel"
+          >
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Productos</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Producto
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Precio</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>P-001</td>
+                        <td>Arroz 1kg</td>
+                        <td>Abarrotes</td>
+                        <td>S/ 4.50</td>
+                        <td>
+                          <span class="badge text-bg-success">Activo</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>P-002</td>
+                        <td>Leche Gloria</td>
+                        <td>Lácteos</td>
+                        <td>S/ 3.20</td>
+                        <td>
+                          <span class="badge text-bg-success">Activo</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Clientes -->
+          <div class="tab-pane fade" id="pane-clientes" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Clientes</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Cliente
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>DNI 12345678</td>
+                        <td>María López</td>
+                        <td>987654321</td>
+                        <td>Av. Lima 123</td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proveedores -->
+          <div class="tab-pane fade" id="pane-proveedores" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Proveedores</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Proveedor
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>RUC</th>
+                        <th>Razón Social</th>
+                        <th>Contacto</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>20123456789</td>
+                        <td>Distribuidora Norte S.A.C.</td>
+                        <td>Carlos Ruiz</td>
+                        <td>987123456</td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categorías -->
+          <div class="tab-pane fade" id="pane-categorias" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Categorías</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nueva Categoría
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Categoría</th>
+                        <th>Descripción</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>Abarrotes</td>
+                        <td>Alimentos de despensa</td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>Lácteos</td>
+                        <td>Leche, yogur y derivados</td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button
+                            class="btn btn-outline-primary btn-sm"
+                            title="Desactivar"
+                          >
+                            <i class="bi bi-toggle-on"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empleados -->
+          <div class="tab-pane fade" id="pane-empleados" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Empleados</span>
+                <button
+                  class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalNuevoEmpleado"
+                >
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Empleado
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Turno</th>
+                        <th>Celular</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>DNI 21500001</td>
+                        <td>Martha Quispe Rojas</td>
+                        <td>ADMINISTRADOR</td>
+                        <td>MANANA</td>
+                        <td>956123456</td>
+                        <td>
+                          <span class="badge text-bg-success">Activo</span>
+                        </td>
+                        <td>
+                          <div class="d-flex gap-1">
+                            <button class="btn btn-outline-primary btn-sm">
+                              <i class="bi bi-pencil"></i>
+                            </button>
+                            <button
+                              class="btn btn-outline-primary btn-sm"
+                              title="Desactivar"
+                            >
+                              <i class="bi bi-toggle-on"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal Nuevo Empleado -->
+    <div
+      class="modal fade"
+      id="modalNuevoEmpleado"
+      tabindex="-1"
+      aria-labelledby="modalNuevoEmpleadoLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevoEmpleadoLabel">
+              Nuevo Empleado
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <h6 class="fw-bold mb-3">Datos personales</h6>
+              <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                  <label for="empleado-tipo-doc" class="form-label"
+                    >Tipo de documento</label
+                  >
+                  <select class="form-select" id="empleado-tipo-doc" required>
+                    <option value="" disabled selected>Seleccione</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-documento" class="form-label"
+                    >N° de documento</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-documento"
+                    maxlength="15"
+                    required
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-nombre" class="form-label"
+                    >Nombres</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-nombre"
+                    maxlength="80"
+                    required
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-ap-paterno" class="form-label"
+                    >Apellido paterno
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-ap-paterno"
+                    maxlength="80"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-ap-materno" class="form-label"
+                    >Apellido materno
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-ap-materno"
+                    maxlength="80"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-nacimiento" class="form-label"
+                    >Fecha de nacimiento
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="empleado-nacimiento"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-genero" class="form-label"
+                    >Género <small class="text-muted">(opcional)</small></label
+                  >
+                  <select class="form-select" id="empleado-genero">
+                    <option value="" selected>Seleccione</option>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="O">Otro</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-celular" class="form-label"
+                    >Celular <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="empleado-celular"
+                    maxlength="9"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-email" class="form-label"
+                    >Correo <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="empleado-email"
+                    maxlength="50"
+                  />
+                </div>
+                <div class="col-md-8">
+                  <label for="empleado-direccion" class="form-label"
+                    >Dirección
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-direccion"
+                    maxlength="100"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-distrito" class="form-label"
+                    >Distrito
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <select class="form-select" id="empleado-distrito">
+                    <option value="" selected>Seleccione</option>
+                    <option value="1">ICA</option>
+                    <option value="2">PARCONA</option>
+                    <option value="3">LA TINGUINA</option>
+                    <option value="4">SUBTANJALLA</option>
+                    <option value="5">PUEBLO NUEVO</option>
+                  </select>
+                </div>
+              </div>
+
+              <h6 class="fw-bold mb-3">Datos laborales</h6>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="empleado-cargo" class="form-label"
+                    >Cargo <small class="text-muted">(opcional)</small></label
+                  >
+                  <select class="form-select" id="empleado-cargo">
+                    <option value="" selected>Seleccione</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-contrato" class="form-label"
+                    >Tipo de contrato
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <select class="form-select" id="empleado-contrato">
+                    <option value="" selected>Seleccione</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-turno" class="form-label"
+                    >Turno <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-turno"
+                    maxlength="18"
+                    placeholder="Ej: MANANA"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-salario" class="form-label"
+                    >Salario (S/)
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="empleado-salario"
+                    min="0"
+                    max="999999.99"
+                    step="0.01"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-fondo-pension" class="form-label"
+                    >Fondo de pensión
+                    <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-fondo-pension"
+                    maxlength="3"
+                    placeholder="Ej: AFP"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-hps" class="form-label"
+                    >N° HPS <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-hps"
+                    maxlength="11"
+                  />
+                </div>
+                <div class="col-md-4">
+                  <label for="empleado-essalud" class="form-label"
+                    >EsSalud <small class="text-muted">(opcional)</small></label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="empleado-essalud"
+                    maxlength="6"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary">
+              <i class="bi bi-person-plus me-1"></i>Guardar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Configuración -->
+    <div
+      class="modal fade"
+      id="modalConfiguracion"
+      tabindex="-1"
+      aria-labelledby="modalConfiguracionLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConfiguracionLabel">
+              <i class="bi bi-gear me-2"></i>Configuración
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 class="fw-bold mb-3">Apariencia</h6>
+            <p class="text-muted small">Selecciona el tema del sistema.</p>
+            <div class="row g-3">
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="claro"
+                >
+                  <i class="bi bi-brightness-high-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Claro</div>
+                  <small class="text-muted">Tema predeterminado</small>
+                </button>
+              </div>
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="oscuro"
+                >
+                  <i class="bi bi-moon-stars-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Oscuro</div>
+                  <small class="text-muted">Reduce el brillo</small>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/theme.js"></script>
+    <script type="module" src="./empleados.js"></script>
+  
+    <script>
+      document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var icon = this.querySelector('.bi-chevron-down, .bi-chevron-up');
+          if (!icon) return;
+          if (this.classList.contains('collapsed')) {
+            icon.classList.remove('bi-chevron-down');
+            icon.classList.add('bi-chevron-up');
+          } else {
+            icon.classList.remove('bi-chevron-up');
+            icon.classList.add('bi-chevron-down');
+          }
+        });
+      });
+    </script>
+    
+  </body>
+</html>

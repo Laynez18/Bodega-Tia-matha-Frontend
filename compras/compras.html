@@ -1,0 +1,891 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compras - Mini Market</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="../assets/fonts.css" rel="stylesheet" />
+    <link href="../assets/themes.css" rel="stylesheet" />
+    <link href="../assets/global.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("mm-theme") === "oscuro") {
+            document.documentElement.setAttribute("data-theme", "oscuro");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="d-flex">
+      <!-- ============ SIDEBAR ============ -->
+      <aside
+        class="sidebar-desktop d-none d-md-flex flex-column flex-shrink-0 bg-dark text-white p-3"
+        style="width: 250px; height: 100vh"
+      >
+        <!-- Logo / Nombre -->
+        <a
+          href="#"
+          class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none"
+        >
+          <i class="bi bi-shop fs-4 me-2"></i>
+          <span class="fs-5 fw-semibold">Mini Market</span>
+        </a>
+        <hr />
+
+        <!-- Menú de módulos -->
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="../inicio/inicio.html" class="nav-link text-white">
+              <i class="bi bi-house me-2"></i>
+              Inicio
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../seguridad/seguridad.html" class="nav-link text-white">
+              <i class="bi bi-shield-lock me-2"></i>
+              Seguridad
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="../mantenimiento/mantenimiento.html"
+              class="nav-link text-white"
+            >
+              <i class="bi bi-gear me-2"></i>
+              Mantenimiento
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="../compras/compras.html"
+              class="nav-link active"
+              aria-current="page"
+            >
+              <i class="bi bi-truck me-2"></i>
+              Compras
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../inventario/inventario.html" class="nav-link text-white">
+              <i class="bi bi-box-seam me-2"></i>
+              Inventario
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../ventas/ventas.html" class="nav-link text-white">
+              <i class="bi bi-basket me-2"></i>
+              Ventas
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../creditos/creditos.html" class="nav-link text-white">
+              <i class="bi bi-hand-index-thumb me-2"></i>
+              Créditos
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../caja/caja.html" class="nav-link text-white">
+              <i class="bi bi-cash-coin me-2"></i>
+              Caja
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="../reportes/reportes.html" class="nav-link text-white">
+              <i class="bi bi-bar-chart me-2"></i>
+              Reportes
+            </a>
+          </li>
+        </ul>
+        <hr />
+
+        <!-- Usuario -->
+        <div class="dropdown">
+          <a
+            href="#"
+            class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="bi bi-person-circle fs-4 me-2"></i>
+            <strong>ADMIN</strong>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li>
+              <a
+                class="dropdown-item"
+                href="#"
+                data-bs-toggle="modal"
+                data-bs-target="#modalConfiguracion"
+                ><i class="bi bi-gear me-2"></i>Configuración</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="#"
+                ><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a
+              >
+            </li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ============ MENÚ MÓVIL (offcanvas) ============ -->
+      <div
+        class="offcanvas offcanvas-start bg-dark text-white"
+        tabindex="-1"
+        id="menuMovil"
+        aria-labelledby="menuMovilLabel"
+        style="width: 250px"
+      >
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title text-white" id="menuMovilLabel">
+            <i class="bi bi-shop me-2"></i>Mini Market
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <hr class="my-0" />
+        <div class="offcanvas-body d-flex flex-column">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+              <a href="../inicio/inicio.html" class="nav-link text-white">
+                <i class="bi bi-house me-2"></i>
+                Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../seguridad/seguridad.html" class="nav-link text-white">
+                <i class="bi bi-shield-lock me-2"></i>
+                Seguridad
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="../mantenimiento/mantenimiento.html"
+                class="nav-link text-white"
+              >
+                <i class="bi bi-gear me-2"></i>
+                Mantenimiento
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                href="../compras/compras.html"
+                class="nav-link active"
+                aria-current="page"
+              >
+                <i class="bi bi-truck me-2"></i>
+                Compras
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../inventario/inventario.html" class="nav-link text-white">
+                <i class="bi bi-box-seam me-2"></i>
+                Inventario
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../ventas/ventas.html" class="nav-link text-white">
+                <i class="bi bi-basket me-2"></i>
+                Ventas
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../creditos/creditos.html" class="nav-link text-white">
+                <i class="bi bi-hand-index-thumb me-2"></i>
+                Créditos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../caja/caja.html" class="nav-link text-white">
+                <i class="bi bi-cash-coin me-2"></i>
+                Caja
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../reportes/reportes.html" class="nav-link text-white">
+                <i class="bi bi-bar-chart me-2"></i>
+                Reportes
+              </a>
+            </li>
+          </ul>
+          <hr />
+          <div class="dropdown">
+            <a
+              href="#"
+              class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person-circle fs-4 me-2"></i>
+              <strong>ADMIN</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalConfiguracion"
+                  ><i class="bi bi-gear me-2"></i>Configuración</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CONTENIDO ============ -->
+      <main class="flex-grow-1 min-width-0 p-3 p-md-4">
+        <!-- Barra superior para móvil -->
+        <header
+          class="d-md-none d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 border-bottom mb-3"
+        >
+          <button
+            class="btn btn-dark"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#menuMovil"
+          >
+            <i class="bi bi-list"></i>
+            Menú
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-semibold">Mini Market</span>
+            <i class="bi bi-person-circle fs-4 text-secondary"></i>
+          </div>
+        </header>
+        <div class="d-flex align-items-center mb-4">
+          <h4 class="mb-0">Compras</h4>
+        </div>
+
+        <!-- Pestañas de secciones -->
+        <ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" id="tabCompras" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="tab-compras"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-compras"
+              type="button"
+              role="tab"
+            >
+              Compras
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-proveedores"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-proveedores"
+              type="button"
+              role="tab"
+            >
+              Proveedores
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-ordenes"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-ordenes"
+              type="button"
+              role="tab"
+            >
+              Órdenes de Compra
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="tabComprasContenido">
+          <!-- Compras -->
+          <div
+            class="tab-pane fade show active"
+            id="pane-compras"
+            role="tabpanel"
+          >
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Compras</span>
+                <button
+                  class="btn btn-primary btn-sm"
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalNuevaCompra"
+                >
+                  <i class="bi bi-plus-lg me-1"></i>Nueva Compra
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>N° Compra</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>C-001</td>
+                        <td>02/09/2026</td>
+                        <td>Distribuidora Norte S.A.C.</td>
+                        <td>S/ 1,250.00</td>
+                        <td>
+                          <span class="badge text-bg-success">Finalizada</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Proveedores -->
+          <div class="tab-pane fade" id="pane-proveedores" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Proveedores</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Proveedor
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>RUC</th>
+                        <th>Razón Social</th>
+                        <th>Contacto</th>
+                        <th>Teléfono</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>20123456789</td>
+                        <td>Distribuidora Norte S.A.C.</td>
+                        <td>Carlos Ruiz</td>
+                        <td>987123456</td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Órdenes de compra -->
+          <div class="tab-pane fade" id="pane-ordenes" role="tabpanel">
+            <div class="card shadow-sm">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
+                <span>Lista de Órdenes de Compra</span>
+                <button class="btn btn-primary btn-sm">
+                  <i class="bi bi-plus-lg me-1"></i>Nueva Orden
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>N° Orden</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>OC-001</td>
+                        <td>01/09/2026</td>
+                        <td>Distribuidora Norte S.A.C.</td>
+                        <td>S/ 850.00</td>
+                        <td>
+                          <span class="badge text-bg-warning">Pendiente</span>
+                        </td>
+                        <td>
+                          <button class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-eye"></i>
+                          </button>
+                          <button class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal Nueva Compra -->
+    <div
+      class="modal fade"
+      id="modalNuevaCompra"
+      tabindex="-1"
+      aria-labelledby="modalNuevaCompraLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <form class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevaCompraLabel">
+              <i class="bi bi-cart-plus me-2"></i>Registrar compra
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 class="border-bottom pb-2 mb-3">Datos de la compra</h6>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label for="proveedorCompra" class="form-label"
+                  >Proveedor</label
+                >
+                <select class="form-select" id="proveedorCompra" required>
+                  <option value="" selected disabled>
+                    Seleccione un proveedor
+                  </option>
+                  <option>Distribuidora Norte S.A.C.</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="almacenCompra" class="form-label"
+                  >Almacén destino</label
+                >
+                <select class="form-select" id="almacenCompra" required>
+                  <option value="" selected disabled>Seleccione</option>
+                  <option>Tienda</option>
+                  <option>Depósito</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="fechaCompra" class="form-label"
+                  >Fecha de compra</label
+                >
+                <input
+                  class="form-control"
+                  id="fechaCompra"
+                  type="date"
+                  required
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="tipoDocumentoCompra" class="form-label"
+                  >Tipo de documento</label
+                >
+                <select class="form-select" id="tipoDocumentoCompra">
+                  <option value="">Sin documento</option>
+                  <option>Factura</option>
+                  <option>Boleta</option>
+                  <option>Nota de venta</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="numeroDocumentoCompra" class="form-label"
+                  >N° de documento</label
+                >
+                <input
+                  class="form-control"
+                  id="numeroDocumentoCompra"
+                  type="text"
+                  maxlength="50"
+                />
+              </div>
+              <div class="col-md-3">
+                <label for="metodoPagoCompra" class="form-label"
+                  >Método de pago</label
+                >
+                <select class="form-select" id="metodoPagoCompra">
+                  <option value="" selected disabled>Seleccione</option>
+                  <option>Efectivo</option>
+                  <option>Yape</option>
+                  <option>Plin</option>
+                  <option>Tarjeta de débito</option>
+                  <option>Transferencia</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="montoPagadoCompra" class="form-label"
+                  >Pago inicial</label
+                >
+                <div class="input-group">
+                  <span class="input-group-text">S/</span>
+                  <input
+                    class="form-control"
+                    id="montoPagadoCompra"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="0.00"
+                  />
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label for="fechaVencimientoCompra" class="form-label"
+                  >Vencimiento de pago</label
+                >
+                <input
+                  class="form-control"
+                  id="fechaVencimientoCompra"
+                  type="date"
+                  disabled
+                />
+                <div class="form-text">Solo para compras al crédito.</div>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    id="compraCredito"
+                    type="checkbox"
+                  />
+                  <label class="form-check-label" for="compraCredito"
+                    >Compra al crédito</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3"
+            >
+              <h6 class="mb-0">Productos recibidos</h6>
+              <button class="btn btn-outline-primary btn-sm" type="button">
+                <i class="bi bi-plus-lg me-1"></i>Agregar producto
+              </button>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="min-width: 190px">Producto</th>
+                    <th style="min-width: 170px">Presentación</th>
+                    <th style="min-width: 130px">Cantidad</th>
+                    <th style="min-width: 125px">Equivalencia</th>
+                    <th style="min-width: 135px">Ingreso a stock</th>
+                    <th style="min-width: 145px">Costo por presentación</th>
+                    <th style="min-width: 135px">N° de lote</th>
+                    <th style="min-width: 155px">Fecha venc.</th>
+                    <th style="min-width: 130px">Subtotal</th>
+                    <th aria-label="Acciones"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <select
+                        class="form-select"
+                        aria-label="Producto"
+                        required
+                      >
+                        <option value="" disabled>Buscar o seleccionar</option>
+                        <option>Arroz Costeño</option>
+                        <option>Aceite Primor 1L</option>
+                        <option>Coca Cola 1.5L</option>
+                        <option selected>Leche Gloria Tarro</option>
+                        <option>Detergente Ariel 780G</option>
+                        <option>Galleta Soda Field</option>
+                        <option>Cerveza Pilsen 650ML</option>
+                        <option>Papel Higiénico Elite x4</option>
+                      </select>
+                    </td>
+                    <td>
+                      <select
+                        class="form-select"
+                        aria-label="Presentación"
+                        required
+                      >
+                        <option>Unidad (1 UND)</option>
+                        <option selected>Caja x24 (24 UND)</option>
+                      </select>
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        id="cantidadCompra"
+                        aria-label="Cantidad de presentaciones"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value="2"
+                        required
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        aria-label="Equivalencia en unidad base"
+                        type="text"
+                        value="24 UND"
+                        readonly
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        aria-label="Cantidad que ingresa al stock"
+                        type="text"
+                        value="48 UND"
+                        readonly
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        id="costoCompra"
+                        aria-label="Costo por presentación"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value="86.40"
+                        required
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        type="text"
+                        maxlength="30"
+                        value="LEC-SEP-01"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        type="date"
+                        value="2027-03-01"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        class="form-control"
+                        id="subtotalLineaCompra"
+                        type="number"
+                        step="0.01"
+                        value="172.80"
+                        readonly
+                      />
+                    </td>
+                    <td>
+                      <button
+                        class="btn btn-outline-danger btn-sm"
+                        type="button"
+                        aria-label="Quitar producto"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row justify-content-end mt-3">
+              <div class="col-md-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Subtotal</span
+                  ><strong id="subtotalCompra">S/ 172.80</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span>IGV</span><strong id="igvCompra">S/ 0.00</strong>
+                </div>
+                <div
+                  class="d-flex justify-content-between mb-2 border-top pt-2"
+                >
+                  <span>Total</span><strong id="totalCompra">S/ 172.80</strong>
+                </div>
+                <div class="d-flex justify-content-between text-primary">
+                  <span>Saldo pendiente</span
+                  ><strong id="saldoCompra">S/ 172.80</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button class="btn btn-primary" type="submit">
+              <i class="bi bi-check-lg me-1"></i>Guardar compra
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Modal Configuración -->
+    <div
+      class="modal fade"
+      id="modalConfiguracion"
+      tabindex="-1"
+      aria-labelledby="modalConfiguracionLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConfiguracionLabel">
+              <i class="bi bi-gear me-2"></i>Configuración
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 class="fw-bold mb-3">Apariencia</h6>
+            <p class="text-muted small">Selecciona el tema del sistema.</p>
+            <div class="row g-3">
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="claro"
+                >
+                  <i class="bi bi-brightness-high-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Claro</div>
+                  <small class="text-muted">Tema predeterminado</small>
+                </button>
+              </div>
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="oscuro"
+                >
+                  <i class="bi bi-moon-stars-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Oscuro</div>
+                  <small class="text-muted">Reduce el brillo</small>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const cantidadCompra = document.getElementById("cantidadCompra");
+      const costoCompra = document.getElementById("costoCompra");
+      const subtotalLineaCompra = document.getElementById(
+        "subtotalLineaCompra",
+      );
+      const montoPagadoCompra = document.getElementById("montoPagadoCompra");
+      const compraCredito = document.getElementById("compraCredito");
+      const fechaVencimientoCompra = document.getElementById(
+        "fechaVencimientoCompra",
+      );
+      const subtotalCompra = document.getElementById("subtotalCompra");
+      const totalCompra = document.getElementById("totalCompra");
+      const saldoCompra = document.getElementById("saldoCompra");
+
+      function actualizarPagoCompra() {
+        const subtotal =
+          (Number(cantidadCompra.value) || 0) *
+          (Number(costoCompra.value) || 0);
+        const pagoInicial = Math.min(
+          Math.max(Number(montoPagadoCompra.value) || 0, 0),
+          subtotal,
+        );
+        const saldo = subtotal - pagoInicial;
+
+        montoPagadoCompra.value = pagoInicial.toFixed(2);
+        subtotalLineaCompra.value = subtotal.toFixed(2);
+        subtotalCompra.textContent = `S/ ${subtotal.toFixed(2)}`;
+        totalCompra.textContent = `S/ ${subtotal.toFixed(2)}`;
+        saldoCompra.textContent = `S/ ${saldo.toFixed(2)}`;
+        compraCredito.checked = saldo > 0;
+        fechaVencimientoCompra.disabled = saldo === 0;
+        fechaVencimientoCompra.required = saldo > 0;
+      }
+
+      [cantidadCompra, costoCompra, montoPagadoCompra].forEach((campo) => {
+        campo.addEventListener("input", actualizarPagoCompra);
+      });
+
+      actualizarPagoCompra();
+    </script>
+    <script src="../assets/theme.js"></script>
+  </body>
+</html>
