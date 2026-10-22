@@ -661,6 +661,7 @@
     </div>
 
     <script src="../assets/theme.js"></script>
+    <script src="../assets/navegacion-persistente.js"></script>
     <script>
       (function () {
         var modal = document.getElementById("modalAbrirCaja");
@@ -680,6 +681,8 @@
   
     <script>
       (function() {
+        if (window.accordionListenersAgregados) return;
+        window.accordionListenersAgregados = true;
         var STORAGE_KEY = 'mmAccordionEstado';
 
         document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {

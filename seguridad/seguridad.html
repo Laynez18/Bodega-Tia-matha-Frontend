@@ -1827,12 +1827,15 @@
     </div>
 
     <script src="../assets/theme.js"></script>
+    <script src="../assets/navegacion-persistente.js"></script>
     <script type="module" src="./usuarios.js"></script>
     <script type="module" src="./roles.js"></script>
     <script type="module" src="./permisos.js"></script>
   
     <script>
       (function() {
+        if (window.accordionListenersAgregados) return;
+        window.accordionListenersAgregados = true;
         var STORAGE_KEY = 'mmAccordionEstado';
 
         document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
