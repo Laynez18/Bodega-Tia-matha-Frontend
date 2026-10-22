@@ -1,6 +1,8 @@
 (function () {
   var GLOBAL_SRC = /bootstrap|theme\.js|navegacion-persistente/;
   var EVENTO_CAMBIO = 'navegacion-persistente-cambio';
+  var EVENTO_DESPUES = 'navegacion-persistente-despues';
+  var SCROLL_KEY = 'mmSidebarScroll';
 
   function extraerDeHTML(htmlTexto) {
     var parser = new DOMParser();
@@ -47,6 +49,12 @@
     if (!/\.html$/i.test(url)) return;
     if (url === window.location.pathname + window.location.search) return;
 
+    // Guardar scroll del sidebar actual antes de navegar
+    var asideActual = document.querySelector('aside');
+    if (asideActual) {
+      sessionStorage.setItem(SCROLL_KEY, asideActual.scrollTop);
+    }
+
     fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
       .then(function (res) {
         if (!res.ok) throw new Error('No se pudo cargar ' + url);
@@ -82,6 +90,7 @@
         history.pushState(null, '', url);
 
         window.dispatchEvent(new CustomEvent(EVENTO_CAMBIO, { detail: { url: url } }));
+        window.dispatchEvent(new CustomEvent(EVENTO_DESPUES, { detail: { url: url } }));
       })
       .catch(function (err) {
         console.error(err);
@@ -112,5 +121,5 @@
     inicializar();
   }
 
-  window.navegacionPersistente = { navegarA: navegar, EVENTO_CAMBIO: EVENTO_CAMBIO };
+  window.navegacionPersistente = { navegarA: navegar, EVENTO_CAMBIO: EVENTO_CAMBIO, EVENTO_DESPUES: EVENTO_DESPUES };
 })();

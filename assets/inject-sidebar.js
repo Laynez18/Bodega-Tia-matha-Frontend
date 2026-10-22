@@ -9,6 +9,12 @@
       console.error('No se encontró #sidebar-contenedor');
       return;
     }
+
+    // Ancho fijo para evitar colapso y desplazamiento a la derecha
+    contenedor.style.width = '250px';
+    contenedor.style.minWidth = '250px';
+    contenedor.style.flexShrink = '0';
+
     contenedor.innerHTML = html;
 
     // Marcar link activo según la URL actual
@@ -87,6 +93,25 @@
         }
       });
     })();
+
+    // ===== RESTAURAR SCROLL DEL SIDEBAR =====
+    const SCROLL_KEY = 'mmSidebarScroll';
+    const aside = document.querySelector('aside');
+    const scrollGuardado = sessionStorage.getItem(SCROLL_KEY);
+    if (aside && scrollGuardado !== null) {
+      aside.scrollTop = parseInt(scrollGuardado, 10);
+      sessionStorage.removeItem(SCROLL_KEY);
+    }
+
+    // Escuchar eventos de navegación para restaurar scroll después de inyectar
+    window.addEventListener('navegacion-persistente-despues', function() {
+      const aside2 = document.querySelector('aside');
+      const scroll2 = sessionStorage.getItem(SCROLL_KEY);
+      if (aside2 && scroll2 !== null) {
+        aside2.scrollTop = parseInt(scroll2, 10);
+        sessionStorage.removeItem(SCROLL_KEY);
+      }
+    });
 
   } catch (e) {
     console.error('Error inyectando sidebar:', e);

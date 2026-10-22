@@ -22,6 +22,14 @@ body {
   min-width: 0 !important;
 }
 
+/* Sidebar contenedor: ancho fijo para evitar
+   colapso y desplazamiento a la derecha al inyectar */
+#sidebar-contenedor {
+  width: 250px;
+  min-width: 250px;
+  flex-shrink: 0;
+}
+
 /* Columna fija (sticky) en tablas anchas: la primera
    columna queda visible al scrollear horizontalmente.
    Uso: #nombreTabla thead th:first-child / td:first-child
