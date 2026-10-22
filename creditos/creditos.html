@@ -30,7 +30,7 @@
       <!-- ============ SIDEBAR ============ -->
 <aside
         class="sidebar-desktop d-none d-md-flex flex-column flex-shrink-0 bg-dark text-white p-3"
-        style="width: 250px; height: 100vh"
+        style="width: 250px; height: 100vh; overflow-y: auto"
       >
               <!-- Logo / Nombre -->
         <a
@@ -484,19 +484,70 @@
     <script src="../assets/theme.js"></script>
   
     <script>
-      document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-          var icon = this.querySelector('.bi-chevron-down, .bi-chevron-up');
-          if (!icon) return;
-          if (this.classList.contains('collapsed')) {
-            icon.classList.remove('bi-chevron-down');
-            icon.classList.add('bi-chevron-up');
-          } else {
-            icon.classList.remove('bi-chevron-up');
-            icon.classList.add('bi-chevron-down');
-          }
+      (function() {
+        var STORAGE_KEY = 'mmAccordionEstado';
+
+        document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var target = this.getAttribute('data-bs-target');
+            if (!target) return;
+            var clave = target.replace('#', '');
+            var abierto = !this.classList.contains('collapsed');
+
+            var estado = {};
+            try { estado = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
+            estado[clave] = abierto ? 'open' : 'closed';
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+
+            var icon = this.querySelector('.bi-chevron-down, .bi-chevron-up');
+            if (!icon) return;
+            if (this.classList.contains('collapsed')) {
+              icon.classList.remove('bi-chevron-down');
+              icon.classList.add('bi-chevron-up');
+            } else {
+              icon.classList.remove('bi-chevron-up');
+              icon.classList.add('bi-chevron-down');
+            }
+          });
         });
-      });
+
+        document.addEventListener('DOMContentLoaded', function() {
+          var estado = {};
+          try { estado = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
+
+          document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
+            var target = btn.getAttribute('data-bs-target');
+            if (!target) return;
+            var clave = target.replace('#', '');
+            var colapsable = document.querySelector(target);
+            if (!colapsable) return;
+
+            if (estado[clave] === 'open') {
+              btn.classList.remove('collapsed');
+              btn.setAttribute('aria-expanded', 'true');
+              colapsable.classList.remove('collapse');
+              colapsable.classList.add('show');
+
+              var icon = btn.querySelector('.bi-chevron-down, .bi-chevron-up');
+              if (icon) {
+                icon.classList.remove('bi-chevron-down');
+                icon.classList.add('bi-chevron-up');
+              }
+            } else {
+              btn.classList.add('collapsed');
+              btn.setAttribute('aria-expanded', 'false');
+              colapsable.classList.remove('show');
+              colapsable.classList.add('collapse');
+
+              var icon = btn.querySelector('.bi-chevron-down, .bi-chevron-up');
+              if (icon) {
+                icon.classList.remove('bi-chevron-up');
+                icon.classList.add('bi-chevron-down');
+              }
+            }
+          });
+        });
+      })();
     </script>
     
   </body>
