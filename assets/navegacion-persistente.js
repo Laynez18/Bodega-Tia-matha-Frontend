@@ -1,8 +1,6 @@
 (function () {
   var GLOBAL_SRC = /bootstrap|theme\.js|navegacion-persistente/;
   var EVENTO_CAMBIO = 'navegacion-persistente-cambio';
-  var EVENTO_DESPUES = 'navegacion-persistente-despues';
-  var SCROLL_KEY = 'mmSidebarScroll';
 
   function extraerDeHTML(htmlTexto) {
     var parser = new DOMParser();
@@ -35,24 +33,32 @@
   }
 
   function actualizarActivo(url) {
-    var ruta = url.split('?')[0];
-    document.querySelectorAll('aside .nav-link').forEach(function (link) {
-      var href = link.getAttribute('href');
-      if (!href) return;
-      var coincide = href === ruta;
-      link.classList.toggle('active', coincide);
-      link.setAttribute('aria-current', coincide ? 'page' : null);
-    });
+    if (window.sidebarInject) {
+      window.sidebarInject.marcarActivo(url);
+    } else {
+      var ruta = url.split('?')[0].split('/').pop();
+      document.querySelectorAll('aside .nav-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href) return;
+        var coincide = href === '/' + ruta || href.endsWith('/' + ruta) || href === ruta;
+        link.classList.toggle('active', coincide);
+        link.setAttribute('aria-current', coincide ? 'page' : null);
+      });
+    }
   }
 
   function navegar(url) {
     if (!/\.html$/i.test(url)) return;
     if (url === window.location.pathname + window.location.search) return;
 
-    // Guardar scroll del sidebar actual antes de navegar
-    var asideActual = document.querySelector('aside');
-    if (asideActual) {
-      sessionStorage.setItem(SCROLL_KEY, asideActual.scrollTop);
+    // Guardar scroll del sidebar antes de navegar
+    if (window.sidebarInject) {
+      window.sidebarInject.guardarScroll();
+    } else {
+      var asideActual = document.querySelector('aside');
+      if (asideActual) {
+        sessionStorage.setItem('mmSidebarScroll', asideActual.scrollTop);
+      }
     }
 
     fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
@@ -64,33 +70,43 @@
         var extraido = extraerDeHTML(html);
         var body = document.body;
 
-        var asideActual = body.querySelector('aside');
-        var contenedorLayout = asideActual ? asideActual.parentElement : null;
-
-        if (contenedorLayout) {
-          var mainActual = contenedorLayout.querySelector('main');
-          if (mainActual) mainActual.remove();
-          if (extraido.main) {
-            contenedorLayout.appendChild(extraido.main);
-          }
-        } else if (extraido.main) {
-          var mainExistente = body.querySelector('main');
-          if (mainExistente) mainExistente.remove();
-          body.insertBefore(extraido.main, body.firstChild);
+        // Solo reemplazar el <main>, NUNCA tocar el sidebar (<aside>)
+        var mainActual = document.querySelector('main');
+        if (mainActual) {
+          mainActual.remove();
         }
 
+        var layout = document.querySelector('.d-flex') || body;
+        if (extraido.main) {
+          // Insertar el main después del sidebar (aside)
+          var aside = layout.querySelector('aside');
+          if (aside) {
+            aside.parentNode.insertBefore(extraido.main, aside.nextSibling);
+          } else {
+            layout.insertBefore(extraido.main, layout.firstChild);
+          }
+        }
+
+        // Reemplazar modales
         body.querySelectorAll('.modal').forEach(function (m) { m.remove(); });
         extraido.modales.forEach(function (m) { body.appendChild(m); });
 
+        // Ejecutar scripts de la página (excluyendo globales)
         body.querySelectorAll('script[data-persistente="true"]').forEach(function (s) { s.remove(); });
         ejecutarScripts(extraido.scripts);
+
+        // Restaurar acordeón y scroll del sidebar
+        if (window.sidebarInject) {
+          window.sidebarInject.restaurarAcordeon();
+          window.sidebarInject.restaurarScroll();
+          window.sidebarInject.initAcordeonListeners();
+        }
 
         if (extraido.title) document.title = extraido.title;
         actualizarActivo(url);
         history.pushState(null, '', url);
 
         window.dispatchEvent(new CustomEvent(EVENTO_CAMBIO, { detail: { url: url } }));
-        window.dispatchEvent(new CustomEvent(EVENTO_DESPUES, { detail: { url: url } }));
       })
       .catch(function (err) {
         console.error(err);
@@ -99,10 +115,15 @@
   }
 
   function inicializar() {
-    // Enlaces del sidebar funcionan normalmente (recarga de página).
-    // El estado del acordeón se conserva vía localStorage (ver inject-sidebar.js).
     document.body.addEventListener('click', function (e) {
-      // Sin preventDefault: el enlace navega normalmente
+      var enlace = e.target.closest('aside a[href]');
+      if (!enlace) return;
+      var href = enlace.getAttribute('href');
+      if (!href || href.startsWith('#') || href.startsWith('http')) return;
+      if (enlace.getAttribute('data-bs-toggle') || enlace.getAttribute('data-bs-target')) return;
+      if (enlace.getAttribute('data-bs-dismiss')) return;
+      e.preventDefault();
+      navegar(href);
     });
 
     window.addEventListener('popstate', function () {
@@ -116,5 +137,5 @@
     inicializar();
   }
 
-  window.navegacionPersistente = { navegarA: navegar, EVENTO_CAMBIO: EVENTO_CAMBIO, EVENTO_DESPUES: EVENTO_DESPUES };
+  window.navegacionPersistente = { navegarA: navegar, EVENTO_CAMBIO: EVENTO_CAMBIO };
 })();
