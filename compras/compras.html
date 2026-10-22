@@ -28,126 +28,7 @@
   <body>
     <div class="d-flex">
       <!-- ============ SIDEBAR ============ -->
-      <aside
-        class="sidebar-desktop d-none d-md-flex flex-column flex-shrink-0 bg-dark text-white p-3"
-        style="width: 250px; height: 100vh; overflow-y: auto"
-      >
-        <!-- Logo / Nombre -->
-        <a
-          href="#"
-          class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none"
-        >
-          <i class="bi bi-shop fs-4 me-2"></i>
-          <span class="fs-5 fw-semibold">Mini Market</span>
-        </a>
-        <hr />
-
-        <!-- Menú de módulos -->
-        <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="../inicio/inicio.html" class="nav-link text-white">
-              <i class="bi bi-house me-2"></i>
-              Inicio
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../seguridad/seguridad.html" class="nav-link text-white">
-              <i class="bi bi-shield-lock me-2"></i>
-              Seguridad
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              href="../mantenimiento/mantenimiento.html"
-              class="nav-link text-white"
-            >
-              <i class="bi bi-gear me-2"></i>
-              Mantenimiento
-            </a>
-          </li>
-          <li class="nav-item">
-            <a
-              href="../compras/compras.html"
-              class="nav-link active"
-              aria-current="page"
-            >
-              <i class="bi bi-truck me-2"></i>
-              Compras
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../inventario/inventario.html" class="nav-link text-white">
-              <i class="bi bi-box-seam me-2"></i>
-              Inventario
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../ventas/ventas.html" class="nav-link text-white">
-              <i class="bi bi-basket me-2"></i>
-              Ventas
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../creditos/creditos.html" class="nav-link text-white">
-              <i class="bi bi-hand-index-thumb me-2"></i>
-              Créditos
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../caja/caja.html" class="nav-link text-white">
-              <i class="bi bi-cash-coin me-2"></i>
-              Caja
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="../reportes/reportes.html" class="nav-link text-white">
-              <i class="bi bi-bar-chart me-2"></i>
-              Reportes
-            </a>
-          </li>
-        </ul>
-        <hr />
-
-        <!-- Usuario -->
-        <div class="dropdown">
-          <a
-            href="#"
-            class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <i class="bi bi-person-circle fs-4 me-2"></i>
-            <strong>ADMIN</strong>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark">
-            <li>
-              <a
-                class="dropdown-item"
-                href="#"
-                data-bs-toggle="modal"
-                data-bs-target="#modalConfiguracion"
-                ><i class="bi bi-gear me-2"></i>Configuración</a
-              >
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <a class="dropdown-item" href="#"
-                ><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a
-              >
-            </li>
-          </ul>
-        </div>
-        <hr />
-        <div class="mt-4 pt-3 border-top">
-          <a
-            href="#"
-            class="d-flex align-items-center text-white text-decoration-none"
-            onclick="event.preventDefault(); cerrarSesion();"
-          >
-            <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
-          </a>
-        </div>
-      </aside>
+      <div id="sidebar-contenedor"></div>
 
       <!-- ============ MENÚ MÓVIL (offcanvas) ============ -->
       <div
@@ -897,6 +778,7 @@
       actualizarPagoCompra();
     </script>
     <script src="../assets/theme.js"></script>
+    <script src="../assets/inject-sidebar.js"></script>
     <script src="../assets/navegacion-persistente.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
   </body>
