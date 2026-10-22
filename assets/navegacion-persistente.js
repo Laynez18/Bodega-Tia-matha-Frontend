@@ -1,7 +1,6 @@
 (function () {
   var GLOBAL_SRC = /bootstrap|theme\.js|navegacion-persistente/;
   var EVENTO_CAMBIO = 'navegacion-persistente-cambio';
-  var STORAGE_KEY = 'mmAccordionEstado';
 
   function extraerDeHTML(htmlTexto) {
     var parser = new DOMParser();
@@ -29,39 +28,6 @@
       if (!original.src) {
         s.onload = function () { s.remove(); };
         s.onerror = function () { s.remove(); };
-      }
-    });
-  }
-
-  function restaurarAccordion() {
-    var estado = {};
-    try { estado = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
-    document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function (btn) {
-      var target = btn.getAttribute('data-bs-target');
-      if (!target) return;
-      var clave = target.replace('#', '');
-      var colapsable = document.querySelector(target);
-      if (!colapsable) return;
-      var icon = btn.querySelector('.bi-chevron-down, .bi-chevron-up');
-
-      if (estado[clave] === 'open') {
-        btn.classList.remove('collapsed');
-        btn.setAttribute('aria-expanded', 'true');
-        colapsable.classList.remove('collapse');
-        colapsable.classList.add('show');
-        if (icon) {
-          icon.classList.remove('bi-chevron-down');
-          icon.classList.add('bi-chevron-up');
-        }
-      } else {
-        btn.classList.add('collapsed');
-        btn.setAttribute('aria-expanded', 'false');
-        colapsable.classList.remove('show');
-        colapsable.classList.add('collapse');
-        if (icon) {
-          icon.classList.remove('bi-chevron-up');
-          icon.classList.add('bi-chevron-down');
-        }
       }
     });
   }
@@ -110,7 +76,6 @@
 
         body.querySelectorAll('script[data-persistente="true"]').forEach(function (s) { s.remove(); });
         ejecutarScripts(extraido.scripts);
-        restaurarAccordion();
 
         if (extraido.title) document.title = extraido.title;
         actualizarActivo(url);
@@ -125,7 +90,6 @@
   }
 
   function inicializar() {
-    restaurarAccordion();
     document.body.addEventListener('click', function (e) {
       var enlace = e.target.closest('aside a[href]');
       if (!enlace) return;
