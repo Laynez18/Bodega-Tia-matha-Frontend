@@ -99,15 +99,10 @@
   }
 
   function inicializar() {
+    // Enlaces del sidebar funcionan normalmente (recarga de página).
+    // El estado del acordeón se conserva vía localStorage (ver inject-sidebar.js).
     document.body.addEventListener('click', function (e) {
-      var enlace = e.target.closest('aside a[href]');
-      if (!enlace) return;
-      var href = enlace.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('http')) return;
-      if (enlace.getAttribute('data-bs-toggle') || enlace.getAttribute('data-bs-target')) return;
-      if (enlace.getAttribute('data-bs-dismiss')) return;
-      e.preventDefault();
-      navegar(href);
+      // Sin preventDefault: el enlace navega normalmente
     });
 
     window.addEventListener('popstate', function () {
