@@ -33,6 +33,17 @@
     });
   }
 
+  function actualizarActivo(url) {
+    var ruta = url.split('?')[0].split('/').pop();
+    document.querySelectorAll('aside .nav-link').forEach(function (link) {
+      var href = link.getAttribute('href');
+      if (!href) return;
+      var coincide = href === '/' + ruta || href.endsWith('/' + ruta) || href === ruta;
+      link.classList.toggle('active', coincide);
+      link.setAttribute('aria-current', coincide ? 'page' : null);
+    });
+  }
+
   function navegar(url) {
     if (!/\.html$/i.test(url)) return;
     if (url === window.location.pathname + window.location.search) return;
@@ -86,6 +97,7 @@
         }
 
         if (extraido.title) document.title = extraido.title;
+        actualizarActivo(url);
         history.pushState(null, '', url);
 
         window.dispatchEvent(new CustomEvent(EVENTO_CAMBIO, { detail: { url: url } }));
@@ -97,6 +109,8 @@
   }
 
   function inicializar() {
+    actualizarActivo(window.location.pathname);
+
     document.body.addEventListener('click', function (e) {
       var enlace = e.target.closest('aside a[href]');
       if (!enlace) return;
