@@ -1,52 +1,32 @@
-(function() {
-  var sidebar = {
-    contenedor: null,
-    STORAGE_KEY: 'mmAccordionEstado',
-    SCROLL_KEY: 'mmSidebarScroll',
+(async function() {
+  try {
+    var contenedor = document.getElementById('sidebar-contenedor');
+    if (!contenedor) {
+      console.error('No se encontró #sidebar-contenedor');
+      return;
+    }
 
-    init: function() {
-      var self = this;
-      this.contenedor = document.getElementById('sidebar-contenedor');
-      if (!this.contenedor) {
-        console.error('No se encontró #sidebar-contenedor');
-        return;
-      }
+    // Ancho fijo para evitar colapso y desplazamiento a la derecha
+    contenedor.style.width = '250px';
+    contenedor.style.minWidth = '250px';
+    contenedor.style.flexShrink = '0';
 
-      // Ancho fijo para evitar colapso y desplazamiento a la derecha
-      this.contenedor.style.width = '250px';
-      this.contenedor.style.minWidth = '250px';
-      this.contenedor.style.flexShrink = '0';
+    var res = await fetch('/assets/sidebar.html');
+    if (!res.ok) throw new Error('No se pudo cargar sidebar.html');
+    var html = await res.text();
+    contenedor.innerHTML = html;
 
-      this.inyectarHTML();
-    },
+    var STORAGE_KEY = 'mmAccordionEstado';
+    var SCROLL_KEY = 'mmSidebarScroll';
 
-    inyectarHTML: function() {
-      var self = this;
-      fetch('/assets/sidebar.html')
-        .then(function(res) {
-          if (!res.ok) throw new Error('No se pudo cargar sidebar.html');
-          return res.text();
-        })
-        .then(function(html) {
-          self.contenedor.innerHTML = html;
-          self.marcarActivo(window.location.pathname);
-          self.restaurarAcordeon();
-          self.restaurarScroll();
-        })
-        .catch(function(e) {
-          console.error('Error inyectando sidebar:', e);
-        });
-    },
-
-    // ===== ACORDEÓN =====
-    guardarEstado: function(clave, abierto) {
+    function guardarEstado(clave, abierto) {
       var estado = {};
-      try { estado = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '{}'); } catch(e) {}
+      try { estado = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
       estado[clave] = abierto ? 'open' : 'closed';
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(estado));
-    },
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(estado));
+    }
 
-    toggleIcon: function(btn) {
+    function toggleIcon(btn) {
       var icon = btn.querySelector('.bi-chevron-down, .bi-chevron-up');
       if (!icon) return;
       if (btn.classList.contains('collapsed')) {
@@ -56,26 +36,24 @@
         icon.classList.remove('bi-chevron-up');
         icon.classList.add('bi-chevron-down');
       }
-    },
+    }
 
-    initAcordeonListeners: function() {
-      var self = this;
+    function initAcordeon() {
       document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
         btn.addEventListener('click', function() {
           var target = this.getAttribute('data-bs-target');
           if (!target) return;
           var clave = target.replace('#', '');
           var abierto = !this.classList.contains('collapsed');
-          self.guardarEstado(clave, abierto);
-          self.toggleIcon(this);
+          guardarEstado(clave, abierto);
+          toggleIcon(this);
         });
       });
-    },
+    }
 
-    restaurarAcordeon: function() {
-      var self = this;
+    function restaurarAcordeon() {
       var estado = {};
-      try { estado = JSON.parse(localStorage.getItem(this.STORAGE_KEY) || '{}'); } catch(e) {}
+      try { estado = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) {}
       document.querySelectorAll('#accordionProcesos .accordion-button').forEach(function(btn) {
         var target = btn.getAttribute('data-bs-target');
         if (!target) return;
@@ -104,46 +82,36 @@
           }
         }
       });
-    },
-
-    // ===== ACTIVO =====
-    marcarActivo: function(url) {
-      var ruta = url.split('?')[0].split('/').pop();
-      if (this.contenedor) {
-        this.contenedor.querySelectorAll('.nav-link').forEach(function(link) {
-          var href = link.getAttribute('href');
-          if (!href) return;
-          var coincide = href === '/' + ruta || href.endsWith('/' + ruta) || href === ruta;
-          link.classList.toggle('active', coincide);
-          link.setAttribute('aria-current', coincide ? 'page' : null);
-        });
-      }
-    },
-
-    // ===== SCROLL =====
-    guardarScroll: function() {
-      var aside = document.querySelector('aside');
-      if (aside) {
-        sessionStorage.setItem(this.SCROLL_KEY, aside.scrollTop);
-      }
-    },
-
-    restaurarScroll: function() {
-      var aside = document.querySelector('aside');
-      var scrollGuardado = sessionStorage.getItem(this.SCROLL_KEY);
-      if (aside && scrollGuardado !== null) {
-        aside.scrollTop = parseInt(scrollGuardado, 10);
-        sessionStorage.removeItem(this.SCROLL_KEY);
-      }
     }
-  };
 
-  // Inicializar al cargar
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() { sidebar.init(); });
-  } else {
-    sidebar.init();
+    // Marcar link activo según la URL actual
+    var ruta = window.location.pathname.split('/').pop();
+    contenedor.querySelectorAll('.nav-link').forEach(function(link) {
+      var href = link.getAttribute('href');
+      if (href && href.endsWith(ruta)) {
+        link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
+      }
+    });
+
+    initAcordeon();
+    restaurarAcordeon();
+
+    // Restaurar scroll guardado
+    var scrollGuardado = sessionStorage.getItem(SCROLL_KEY);
+    if (scrollGuardado !== null) {
+      var aside = document.querySelector('aside');
+      if (aside) aside.scrollTop = parseInt(scrollGuardado, 10);
+      sessionStorage.removeItem(SCROLL_KEY);
+    }
+
+    // Guardar scroll al cambiar de página (recarga completa)
+    window.addEventListener('beforeunload', function() {
+      var a = document.querySelector('aside');
+      if (a) sessionStorage.setItem(SCROLL_KEY, a.scrollTop);
+    });
+
+  } catch (e) {
+    console.error('Error inyectando sidebar:', e);
   }
-
-  window.sidebarInject = sidebar;
 })();

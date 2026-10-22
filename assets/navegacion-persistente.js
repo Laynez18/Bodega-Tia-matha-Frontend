@@ -1,5 +1,6 @@
 (function () {
-  var GLOBAL_SRC = /bootstrap|theme\.js|navegacion-persistente/;
+  // Se añade inject-sidebar para que no se re-ejecute en cada navegación SPA
+  var GLOBAL_SRC = /bootstrap|theme\.js|navegacion-persistente|inject-sidebar/;
   var EVENTO_CAMBIO = 'navegacion-persistente-cambio';
 
   function extraerDeHTML(htmlTexto) {
@@ -32,33 +33,14 @@
     });
   }
 
-  function actualizarActivo(url) {
-    if (window.sidebarInject) {
-      window.sidebarInject.marcarActivo(url);
-    } else {
-      var ruta = url.split('?')[0].split('/').pop();
-      document.querySelectorAll('aside .nav-link').forEach(function (link) {
-        var href = link.getAttribute('href');
-        if (!href) return;
-        var coincide = href === '/' + ruta || href.endsWith('/' + ruta) || href === ruta;
-        link.classList.toggle('active', coincide);
-        link.setAttribute('aria-current', coincide ? 'page' : null);
-      });
-    }
-  }
-
   function navegar(url) {
     if (!/\.html$/i.test(url)) return;
     if (url === window.location.pathname + window.location.search) return;
 
     // Guardar scroll del sidebar antes de navegar
-    if (window.sidebarInject) {
-      window.sidebarInject.guardarScroll();
-    } else {
-      var asideActual = document.querySelector('aside');
-      if (asideActual) {
-        sessionStorage.setItem('mmSidebarScroll', asideActual.scrollTop);
-      }
+    var asideActual = document.querySelector('aside');
+    if (asideActual) {
+      sessionStorage.setItem('mmSidebarScroll', asideActual.scrollTop);
     }
 
     fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
@@ -68,42 +50,42 @@
       })
       .then(function (html) {
         var extraido = extraerDeHTML(html);
-        var body = document.body;
 
-        // Solo reemplazar el <main>, NUNCA tocar el sidebar (<aside>)
+        // Solo reemplazar el <main>. El sidebar (<aside>) nunca se toca.
         var mainActual = document.querySelector('main');
         if (mainActual) {
           mainActual.remove();
         }
 
-        var layout = document.querySelector('.d-flex') || body;
+        var contenedorPagina = document.querySelector('.d-flex') || document.body;
         if (extraido.main) {
-          // Insertar el main después del sidebar (aside)
-          var aside = layout.querySelector('aside');
-          if (aside) {
+          var aside = contenedorPagina.querySelector('aside');
+          if (aside && aside.parentNode === contenedorPagina) {
             aside.parentNode.insertBefore(extraido.main, aside.nextSibling);
           } else {
-            layout.insertBefore(extraido.main, layout.firstChild);
+            contenedorPagina.appendChild(extraido.main);
           }
         }
 
         // Reemplazar modales
-        body.querySelectorAll('.modal').forEach(function (m) { m.remove(); });
-        extraido.modales.forEach(function (m) { body.appendChild(m); });
+        document.body.querySelectorAll('.modal').forEach(function (m) { m.remove(); });
+        extraido.modales.forEach(function (m) { document.body.appendChild(m); });
 
-        // Ejecutar scripts de la página (excluyendo globales)
-        body.querySelectorAll('script[data-persistente="true"]').forEach(function (s) { s.remove(); });
+        // Ejecutar scripts de la página destino (menos los globales)
+        document.body.querySelectorAll('script[data-persistente="true"]').forEach(function (s) { s.remove(); });
         ejecutarScripts(extraido.scripts);
 
-        // Restaurar acordeón y scroll del sidebar
-        if (window.sidebarInject) {
-          window.sidebarInject.restaurarAcordeon();
-          window.sidebarInject.restaurarScroll();
-          window.sidebarInject.initAcordeonListeners();
+        // Restaurar scroll del sidebar
+        var scrollGuardado = sessionStorage.getItem('mmSidebarScroll');
+        if (scrollGuardado !== null) {
+          var aside2 = document.querySelector('aside');
+          if (aside2) {
+            aside2.scrollTop = parseInt(scrollGuardado, 10);
+          }
+          sessionStorage.removeItem('mmSidebarScroll');
         }
 
         if (extraido.title) document.title = extraido.title;
-        actualizarActivo(url);
         history.pushState(null, '', url);
 
         window.dispatchEvent(new CustomEvent(EVENTO_CAMBIO, { detail: { url: url } }));
