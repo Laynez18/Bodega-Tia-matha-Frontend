@@ -253,4 +253,116 @@ body {
   }
 }
 
+/* ============================================
+   RESPONSIVIDAD MÓVIL
+   Mejoras para pantallas pequeñas (celulares)
+   ============================================ */
+@media (max-width: 767.98px) {
+  /* Tablas scrollables en móvil */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 
+  /* Pestañas nav-tabs scrollables en móvil */
+  .nav-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 0.75rem;
+  }
+
+  .nav-tabs .nav-link {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  /* Tarjetas más compactas en móvil */
+  .card-body {
+    padding: 0.75rem;
+  }
+
+  /* Botones más pequeños en móvil */
+  .btn-sm {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  /* Títulos de sección más pequeños */
+  h4, .fs-4 {
+    font-size: 1.2rem;
+  }
+
+  /* Mejorar offcanvas en móvil */
+  .offcanvas {
+    width: 280px;
+  }
+
+  .offcanvas-body {
+    padding: 0.75rem;
+  }
+
+  /* Ajustar padding del contenedor principal en móvil */
+  main.flex-grow-1 {
+    padding: 0.75rem;
+  }
+
+  /* Badges más pequeños en tablas móviles */
+  .badge {
+    font-size: 0.65rem;
+    padding: 0.35em 0.5em;
+  }
+
+  /* Formularios en móvil */
+  .form-control, .form-select {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.5rem;
+  }
+
+  /* Input groups en móvil no se rompan */
+  .input-group > .form-control,
+  .input-group > .form-select {
+    min-width: 0;
+  }
+
+  /* Botones de acción en tabla en columna en móvil */
+  td .d-flex.gap-1 {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  td .d-flex.gap-1 .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Ajustes muy pequeños (menos de 576px) */
+@media (max-width: 575.98px) {
+  .kpi-card .card-body {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem !important;
+  }
+
+  .kpi-icon {
+    margin: 0 auto;
+  }
+
+  /* Tablas: ocultar columnas menos importantes en móvil muy pequeño */
+  table.table td:nth-child(n+8),
+  table.table th:nth-child(n+8) {
+    display: none;
+  }
+
+  /* Modales más estrechos en móvil */
+  .modal-dialog {
+    margin: 0.5rem;
+  }
+
+  .modal-dialog.modal-xl {
+    max-width: 95%;
+  }
+}
