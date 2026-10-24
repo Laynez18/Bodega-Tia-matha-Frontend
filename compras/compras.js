@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let carrito = [];
   let comprasDia = [];
 
-  const btnIniciarCompra = document.getElementById("btn-iniciar-compra");
   const modalCompra = document.getElementById("modalNuevaCompra");
   const btnGuardarCompra = modalCompra.querySelector("#compra-modal-guardar");
   const tbodyCompras = document.querySelector("#tbody-ordenes-compra");
@@ -188,6 +187,21 @@ document.addEventListener("DOMContentLoaded", () => {
     calcularTotales();
   }
 
+  // ============ Modal: Nueva Compra ============
+  if (modalCompra) {
+    modalCompra.addEventListener("show.bs.modal", () => {
+      carrito = [];
+      renderCarrito();
+      limpiarAlerta(alerta);
+      const mProv = document.getElementById("compra-modal-proveedor");
+      const mDoc = document.getElementById("compra-modal-numero-documento");
+      const mEstado = document.getElementById("compra-modal-estado");
+      if (mProv) mProv.selectedIndex = 0;
+      if (mDoc) mDoc.value = "";
+      if (mEstado) mEstado.value = "COMPLETADA";
+    });
+  }
+
   if (btnAgregar) {
     btnAgregar.addEventListener("click", () => {
       const idProd = selectProducto ? selectProducto.value : null;
@@ -264,28 +278,14 @@ document.addEventListener("DOMContentLoaded", () => {
         carrito = [];
         renderCarrito();
         limpiarAlerta(alerta);
-        bootstrap.Modal.getInstance(modalCompra).hide();
+        const modalInstance = bootstrap.Modal.getInstance(modalCompra) || new bootstrap.Modal(modalCompra);
+        modalInstance.hide();
         await listarComprasDia();
       } catch (err) {
         if (!irALogin(err)) mostrarAlerta(alerta, err.mensaje || "No se pudo registrar la compra.");
       } finally {
         btnGuardarCompra.disabled = false;
       }
-    });
-  }
-
-  if (btnIniciarCompra) {
-    btnIniciarCompra.addEventListener("click", () => {
-      carrito = [];
-      renderCarrito();
-      limpiarAlerta(alerta);
-      const mProv = document.getElementById("compra-modal-proveedor");
-      const mDoc = document.getElementById("compra-modal-numero-documento");
-      const mEstado = document.getElementById("compra-modal-estado");
-      if (mProv) mProv.selectedIndex = 0;
-      if (mDoc) mDoc.value = "";
-      if (mEstado) mEstado.value = "COMPLETADA";
-      bootstrap.Modal.getOrCreateInstance(modalCompra).show();
     });
   }
 
@@ -315,7 +315,8 @@ document.addEventListener("DOMContentLoaded", () => {
       limpiarAlerta(alertaProv);
       const form = modalProv.querySelector("form");
       if (form) form.reset();
-      bootstrap.Modal.getOrCreateInstance(modalProv).show();
+      const mInstance = bootstrap.Modal.getInstance(modalProv) || new bootstrap.Modal(modalProv);
+      mInstance.show();
     });
   }
 

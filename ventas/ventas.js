@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let facturas = [];
 
   // ============ DOM: Ventas ============
-  const btnIniciarVenta = document.getElementById("btn-iniciar-venta");
   const modalVenta = document.getElementById("modalNuevaVenta");
   const btnGuardarVenta = modalVenta.querySelector("#venta-modal-guardar");
   const tbodyVentas = document.querySelector("#tbody-ventas-dia");
@@ -191,6 +190,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ============ Modal: Nueva Venta ============
+  // Al abrir el modal, limpiar estado previo
+  if (modalVenta) {
+    modalVenta.addEventListener("show.bs.modal", () => {
+      carrito = [];
+      renderCarrito();
+      limpiarAlerta(alertaVenta);
+      const mSelect = document.getElementById("venta-modal-cliente");
+      const mDoc = document.getElementById("venta-modal-numero-documento");
+      const mEstado = document.getElementById("venta-modal-estado");
+      if (mSelect) mSelect.selectedIndex = 0;
+      if (mDoc) mDoc.value = "";
+      if (mEstado) mEstado.value = "COMPLETADA";
+    });
+  }
+
   if (btnAgregar) {
     btnAgregar.addEventListener("click", () => {
       const idProd = selectProducto ? selectProducto.value : null;
@@ -269,7 +283,8 @@ document.addEventListener("DOMContentLoaded", () => {
         carrito = [];
         renderCarrito();
         limpiarAlerta(alertaVenta);
-        bootstrap.Modal.getInstance(modalVenta).hide();
+        const modalInstance = bootstrap.Modal.getInstance(modalVenta) || new bootstrap.Modal(modalVenta);
+        modalInstance.hide();
         await listarVentasDia();
         await listarComprobantes();
       } catch (err) {
@@ -277,21 +292,6 @@ document.addEventListener("DOMContentLoaded", () => {
       } finally {
         btnGuardarVenta.disabled = false;
       }
-    });
-  }
-
-  if (btnIniciarVenta) {
-    btnIniciarVenta.addEventListener("click", () => {
-      carrito = [];
-      renderCarrito();
-      limpiarAlerta(alertaVenta);
-      const mSelect = document.getElementById("venta-modal-cliente");
-      const mDoc = document.getElementById("venta-modal-numero-documento");
-      const mEstado = document.getElementById("venta-modal-estado");
-      if (mSelect) mSelect.selectedIndex = 0;
-      if (mDoc) mDoc.value = "";
-      if (mEstado) mEstado.value = "COMPLETADA";
-      bootstrap.Modal.getOrCreateInstance(modalVenta).show();
     });
   }
 
@@ -399,7 +399,8 @@ document.addEventListener("DOMContentLoaded", () => {
       inputCompNumero.value = "";
       inputCompTotal.value = "";
       llenarSelectVentasComprobante();
-      bootstrap.Modal.getOrCreateInstance(modalComp).show();
+      const mInstance = bootstrap.Modal.getInstance(modalComp) || new bootstrap.Modal(modalComp);
+      mInstance.show();
     });
   }
 
@@ -421,7 +422,8 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         if (!tieneCsrf()) await yo();
         await api("POST", url, payload);
-        bootstrap.Modal.getInstance(modalComp).hide();
+        const mInstance = bootstrap.Modal.getInstance(modalComp) || new bootstrap.Modal(modalComp);
+        mInstance.hide();
         await listarComprobantes();
       } catch (err) {
         if (!irALogin(err)) mostrarAlerta(alertaComp, err.mensaje || "No se pudo emitir el comprobante.");
