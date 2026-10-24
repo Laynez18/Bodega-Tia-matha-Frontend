@@ -2,11 +2,14 @@ import { api, tieneCsrf, yo } from "../login/login.js";
 
 let proveedores = [];
 let productos = [];
+let metodosPago = [];
 let carrito = [];
 
 const selectProveedor = document.getElementById("compra-proveedor");
 const selectProducto = document.getElementById("compra-producto");
+const selectMetodoPago = document.getElementById("compra-metodo-pago");
 const inputCantidad = document.getElementById("compra-cantidad");
+const inputCosto = document.getElementById("compra-costo");
 const btnAgregar = document.getElementById("compra-agregar-producto");
 const tblCarrito = document.querySelector("#compra-carrito tbody");
 const lblSubtotal = document.getElementById("compra-subtotal");
@@ -31,14 +34,17 @@ function fm(n) { return "S/ " + (n || 0).toFixed(2); }
 async function cargarInicial() {
   limpiarAlerta();
   try {
-    const [prov, prod] = await Promise.all([
+    const [prov, prod, mp] = await Promise.all([
       api("GET", "/api/proveedores"),
-      api("GET", "/api/productos")
+      api("GET", "/api/productos"),
+      api("GET", "/api/metodos-pago")
     ]);
     proveedores = prov || [];
     productos = prod || [];
+    metodosPago = mp || [];
     llenarSelect(selectProveedor, proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
-    llenarSelect(selectProducto, productos, p => p.id, p => p.nombre + " - S/ " + p.precioVenta);
+    llenarSelect(selectProducto, productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
+    llenarSelect(selectMetodoPago, metodosPago, p => p.id, p => p.nombre);
     await listarCompras();
   } catch (err) {
     if (!irALogin(err)) mostrarAlerta(err.mensaje || "No se pudo cargar.");
@@ -59,7 +65,7 @@ function llenarSelect(select, items, idFn, textoFn) {
 }
 
 async function listarCompras() {
-  const tbody = document.querySelector("#pane-compras tbody");
+  const tbody = document.querySelector("#pane-compras-listado tbody");
   if (!tbody) return;
   try {
     const compras = (await api("GET", "/api/compras")) || [];
@@ -109,10 +115,10 @@ function renderCarrito() {
     const tr = document.createElement("tr");
     tr.innerHTML =
       "<td>" + d.nombreProducto + "</td>" +
-      "<td>" + d.cantidad + "</td>" +
-      "<td>" + fm(d.precioUnitario) + "</td>" +
-      "<td>" + fm(d.subtotal) + "</td>" +
-      "<td><button class='btn btn-sm btn-outline-danger' data-idx='" + idx + "'>Quitar</button></td>";
+      "<td class='text-center'>" + d.cantidad + "</td>" +
+      "<td class='text-end'>" + fm(d.precioUnitario) + "</td>" +
+      "<td class='text-end'>" + fm(d.subtotal) + "</td>" +
+      "<td class='text-center'><button class='btn btn-sm btn-outline-danger' data-idx='" + idx + "'>Quitar</button></td>";
     tblCarrito.appendChild(tr);
   });
   calcularTotales();
@@ -122,10 +128,11 @@ if (btnAgregar) {
   btnAgregar.addEventListener("click", () => {
     const idProd = selectProducto ? selectProducto.value : null;
     const cantidad = inputCantidad ? parseInt(inputCantidad.value) : 0;
-    if (!idProd || !cantidad || cantidad <= 0) { mostrarAlerta("Seleccione producto y cantidad."); return; }
+    const costo = inputCosto ? parseFloat(inputCosto.value) : 0;
+    if (!idProd || !cantidad || cantidad <= 0) { mostrarAlerta("Seleccione producto y cantidad válida."); return; }
+    if (costo <= 0) { mostrarAlerta("Ingrese el costo unitario."); return; }
     const producto = productos.find(p => String(p.id) === String(idProd));
     if (!producto) return;
-    if (cantidad > producto.stock) { mostrarAlerta("Stock insuficiente (disponible: " + producto.stock + ")."); return; }
     const existente = carrito.findIndex(d => String(d.idProducto) === String(idProd));
     if (existente >= 0) {
       carrito[existente].cantidad += cantidad;
@@ -135,11 +142,12 @@ if (btnAgregar) {
         idProducto: producto.id,
         nombreProducto: producto.nombre,
         cantidad: cantidad,
-        precioUnitario: producto.precioVenta,
-        subtotal: producto.precioVenta * cantidad
+        precioUnitario: costo,
+        subtotal: costo * cantidad
       });
     }
     inputCantidad.value = 1;
+    inputCosto.value = "";
     renderCarrito();
   });
 }
@@ -157,6 +165,7 @@ if (btnGuardar) {
   btnGuardar.addEventListener("click", async () => {
     limpiarAlerta();
     const idProveedor = selectProveedor ? selectProveedor.value : null;
+    const idMetodoPago = selectMetodoPago ? selectMetodoPago.value : null;
     const numeroDocumento = document.getElementById("compra-numero-documento") ? document.getElementById("compra-numero-documento").value : "";
     const estado = document.getElementById("compra-estado") ? document.getElementById("compra-estado").value : "COMPLETADA";
     if (!idProveedor) { mostrarAlerta("Seleccione un proveedor."); return; }

@@ -14,7 +14,7 @@
     />
         <link href="../assets/fonts.css" rel="stylesheet" />
 <link href="../assets/themes.css" rel="stylesheet" />
-    <link href="../assets/global.css" rel="stylesheet" />
+<link href="../assets/global.css" rel="stylesheet" />
   <script>
     (function () {
       try {
@@ -167,7 +167,6 @@
         </header>
         <div class="d-flex align-items-center mb-4">
           <h4 class="mb-0">Ventas</h4>
-          
         </div>
 
         <!-- Pestañas de secciones -->
@@ -206,35 +205,150 @@
                 class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
               >
                 <span>Nueva Venta</span>
-                <button class="btn btn-success btn-sm">
-                  <i class="bi bi-bag-plus me-1"></i>Iniciar Venta
+                <button class="btn btn-success btn-sm" id="venta-nueva">
+                  <i class="bi bi-bag-plus me-1"></i>Nueva Venta
                 </button>
+              </div>
+              <div class="card-body">
+                <!-- Alerta -->
+                <div id="venta-alerta" class="alert alert-danger d-none mb-3"></div>
+
+                <!-- Datos de la venta -->
+                <div class="row g-3 mb-4">
+                  <div class="col-md-4">
+                    <label for="venta-cliente" class="form-label">Cliente</label>
+                    <select class="form-select" id="venta-cliente" required>
+                      <option value="" selected disabled>Seleccione un cliente</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="venta-metodo-pago" class="form-label">Método de pago</label>
+                    <select class="form-select" id="venta-metodo-pago">
+                      <option value="" selected disabled>Seleccione</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="venta-numero-documento" class="form-label">N° Documento</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="venta-numero-documento"
+                      placeholder="Ej: TICKET-001"
+                    />
+                  </div>
+                  <div class="col-md-2">
+                    <label for="venta-estado" class="form-label">Estado</label>
+                    <select class="form-select" id="venta-estado">
+                      <option value="COMPLETADA">Completada</option>
+                      <option value="ANULADA">Anulada</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Agregar producto -->
+                <div class="row g-3 mb-4">
+                  <div class="col-md-4">
+                    <label for="venta-producto" class="form-label">Producto</label>
+                    <select class="form-select" id="venta-producto" required>
+                      <option value="" selected disabled>Seleccione un producto</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label for="venta-cantidad" class="form-label">Cantidad</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      id="venta-cantidad"
+                      value="1"
+                      min="1"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-3 d-flex align-items-end">
+                    <button
+                      class="btn btn-primary w-100"
+                      id="venta-agregar-producto"
+                    >
+                      <i class="bi bi-plus-lg me-1"></i>Agregar
+                    </button>
+                  </div>
+                  <div class="col-md-2 d-flex align-items-end">
+                    <button
+                      class="btn btn-outline-secondary w-100"
+                      id="venta-nueva"
+                    >
+                      <i class="bi bi-eraser me-1"></i>Limpiar
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Carrito -->
+                <div class="table-responsive mb-3">
+                  <table class="table table-bordered align-middle">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Producto</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-end">Precio Unit.</th>
+                        <th class="text-end">Subtotal</th>
+                        <th class="text-center">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="venta-carrito"></tbody>
+                  </table>
+                </div>
+
+                <!-- Totales -->
+                <div class="d-flex justify-content-between mb-3">
+                  <div>
+                    <div class="d-flex justify-content-between">
+                      <span>Subtotal</span>
+                      <span id="venta-subtotal">S/ 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <span>IGV (18%)</span>
+                      <span id="venta-igv">S/ 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-top pt-2 fw-bold">
+                      <span>Total</span>
+                      <span id="venta-total">S/ 0.00</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-grid">
+                  <button
+                    class="btn btn-success btn-lg"
+                    id="venta-guardar"
+                  >
+                    <i class="bi bi-check-lg me-1"></i>Guardar Venta
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Listado de ventas -->
+          <div class="tab-pane fade" id="pane-listado" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white">
+                <span>Ventas Registradas</span>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table table-hover align-middle">
                     <thead>
                       <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Subtotal</th>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Documento</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>Arroz 1kg</td>
-                        <td>2</td>
-                        <td>S/ 4.50</td>
-                        <td>S/ 9.00</td>
-                        <td>
-                          <button class="btn btn-outline-danger btn-sm">
-                            <i class="bi bi-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <tbody id="pane-ventas"></tbody>
                   </table>
                 </div>
               </div>
@@ -352,11 +466,6 @@
     <script src="../assets/theme.js"></script>
     <script src="../assets/inject-sidebar.js"></script>
     <script src="../assets/navegacion-persistente.js"></script>
-  
-    <script>
-      // El acordeón se gestiona desde assets/inject-sidebar.js
-    </script>
-    
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>
     <script type="module" src="ventas.js"></script>
