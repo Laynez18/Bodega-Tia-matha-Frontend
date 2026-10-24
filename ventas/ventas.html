@@ -165,22 +165,27 @@
             <i class="bi bi-person-circle fs-4 text-secondary"></i>
           </div>
         </header>
+
         <div class="d-flex align-items-center mb-4">
           <h4 class="mb-0">Ventas</h4>
         </div>
 
         <!-- Pestañas de secciones -->
-        <ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" id="tabVentas" role="tablist">
+        <ul
+          class="nav nav-tabs mb-3 flex-nowrap overflow-auto"
+          id="tabVentas"
+          role="tablist"
+        >
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
-              id="tab-pdv"
+              id="tab-ventas-dia"
               data-bs-toggle="tab"
-              data-bs-target="#pane-pdv"
+              data-bs-target="#pane-ventas-dia"
               type="button"
               role="tab"
             >
-              Punto de Venta
+              Ventas del Día
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -198,141 +203,23 @@
         </ul>
 
         <div class="tab-content" id="tabVentasContenido">
-          <!-- Punto de Venta -->
-          <div class="tab-pane fade show active" id="pane-pdv" role="tabpanel">
+          <!-- Ventas del Día -->
+          <div
+            class="tab-pane fade show active"
+            id="pane-ventas-dia"
+            role="tabpanel"
+          >
             <div class="card shadow-sm">
               <div
                 class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
               >
-                <span>Nueva Venta</span>
-                <button class="btn btn-success btn-sm" id="venta-nueva">
-                  <i class="bi bi-bag-plus me-1"></i>Nueva Venta
+                <span>Resumen de Ventas del Día</span>
+                <button
+                  class="btn btn-success btn-sm"
+                  id="btn-iniciar-venta"
+                >
+                  <i class="bi bi-bag-plus me-1"></i>Iniciar Venta
                 </button>
-              </div>
-              <div class="card-body">
-                <!-- Alerta -->
-                <div id="venta-alerta" class="alert alert-danger d-none mb-3"></div>
-
-                <!-- Datos de la venta -->
-                <div class="row g-3 mb-4">
-                  <div class="col-md-4">
-                    <label for="venta-cliente" class="form-label">Cliente</label>
-                    <select class="form-select" id="venta-cliente" required>
-                      <option value="" selected disabled>Seleccione un cliente</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="venta-metodo-pago" class="form-label">Método de pago</label>
-                    <select class="form-select" id="venta-metodo-pago">
-                      <option value="" selected disabled>Seleccione</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="venta-numero-documento" class="form-label">N° Documento</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="venta-numero-documento"
-                      placeholder="Ej: TICKET-001"
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="venta-estado" class="form-label">Estado</label>
-                    <select class="form-select" id="venta-estado">
-                      <option value="COMPLETADA">Completada</option>
-                      <option value="ANULADA">Anulada</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Agregar producto -->
-                <div class="row g-3 mb-4">
-                  <div class="col-md-4">
-                    <label for="venta-producto" class="form-label">Producto</label>
-                    <select class="form-select" id="venta-producto" required>
-                      <option value="" selected disabled>Seleccione un producto</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="venta-cantidad" class="form-label">Cantidad</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="venta-cantidad"
-                      value="1"
-                      min="1"
-                      required
-                    />
-                  </div>
-                  <div class="col-md-3 d-flex align-items-end">
-                    <button
-                      class="btn btn-primary w-100"
-                      id="venta-agregar-producto"
-                    >
-                      <i class="bi bi-plus-lg me-1"></i>Agregar
-                    </button>
-                  </div>
-                  <div class="col-md-2 d-flex align-items-end">
-                    <button
-                      class="btn btn-outline-secondary w-100"
-                      id="venta-nueva"
-                    >
-                      <i class="bi bi-eraser me-1"></i>Limpiar
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Carrito -->
-                <div class="table-responsive mb-3">
-                  <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th>Producto</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-end">Precio Unit.</th>
-                        <th class="text-end">Subtotal</th>
-                        <th class="text-center">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody id="venta-carrito"></tbody>
-                  </table>
-                </div>
-
-                <!-- Totales -->
-                <div class="d-flex justify-content-between mb-3">
-                  <div>
-                    <div class="d-flex justify-content-between">
-                      <span>Subtotal</span>
-                      <span id="venta-subtotal">S/ 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span>IGV (18%)</span>
-                      <span id="venta-igv">S/ 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between border-top pt-2 fw-bold">
-                      <span>Total</span>
-                      <span id="venta-total">S/ 0.00</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="d-grid">
-                  <button
-                    class="btn btn-success btn-lg"
-                    id="venta-guardar"
-                  >
-                    <i class="bi bi-check-lg me-1"></i>Guardar Venta
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Listado de ventas -->
-          <div class="tab-pane fade" id="pane-listado" role="tabpanel">
-            <div class="card shadow-sm">
-              <div class="card-header bg-white">
-                <span>Ventas Registradas</span>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -348,7 +235,7 @@
                         <th>Acciones</th>
                       </tr>
                     </thead>
-                    <tbody id="pane-ventas"></tbody>
+                    <tbody id="tbody-ventas-dia"></tbody>
                   </table>
                 </div>
               </div>
@@ -380,28 +267,162 @@
                         <th>Acciones</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>B001-000123</td>
-                        <td><span class="badge text-bg-info">Boleta</span></td>
-                        <td>02/09/2026</td>
-                        <td>Cliente mostrador</td>
-                        <td>S/ 9.00</td>
-                        <td>
-                          <button class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-eye"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <tbody id="tbody-comprobantes"></tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
-</main>
+      </main>
+    </div>
+
+    <!-- ============ MODAL: NUEVA VENTA ============ -->
+    <div
+      class="modal fade"
+      id="modalNuevaVenta"
+      tabindex="-1"
+      aria-labelledby="modalNuevaVentaLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevaVentaLabel">
+              <i class="bi bi-cart-plus me-2"></i>Nueva Venta
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <!-- Alerta -->
+            <div id="venta-modal-alerta" class="alert alert-danger d-none mb-3"></div>
+
+            <!-- Datos de la venta -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label for="venta-modal-cliente" class="form-label">Cliente</label>
+                <select class="form-select" id="venta-modal-cliente" required>
+                  <option value="" selected disabled>Seleccione un cliente</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="venta-modal-metodo-pago" class="form-label">Método de pago</label>
+                <select class="form-select" id="venta-modal-metodo-pago">
+                  <option value="" selected disabled>Seleccione</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="venta-modal-numero-documento" class="form-label">N° Documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="venta-modal-numero-documento"
+                  placeholder="Ej: TICKET-001"
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="venta-modal-estado" class="form-label">Estado</label>
+                <select class="form-select" id="venta-modal-estado">
+                  <option value="COMPLETADA">Completada</option>
+                  <option value="ANULADA">Anulada</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Agregar producto -->
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label for="venta-modal-producto" class="form-label">Producto</label>
+                <select class="form-select" id="venta-modal-producto" required>
+                  <option value="" selected disabled>Seleccione un producto</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label for="venta-modal-cantidad" class="form-label">Cantidad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="venta-modal-cantidad"
+                  value="1"
+                  min="1"
+                  required
+                />
+              </div>
+              <div class="col-md-4 d-flex align-items-end">
+                <button
+                  class="btn btn-primary w-100"
+                  id="venta-modal-agregar-producto"
+                >
+                  <i class="bi bi-plus-lg me-1"></i>Agregar
+                </button>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button
+                  class="btn btn-outline-secondary w-100"
+                  type="button"
+                  id="venta-modal-limpiar"
+                >
+                  <i class="bi bi-eraser me-1"></i>Limpiar
+                </button>
+              </div>
+            </div>
+
+            <!-- Carrito -->
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Precio Unit.</th>
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="venta-modal-carrito"></tbody>
+              </table>
+            </div>
+
+            <!-- Totales -->
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <div class="d-flex justify-content-between">
+                  <span>Subtotal</span>
+                  <span id="venta-modal-subtotal">S/ 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>IGV (18%)</span>
+                  <span id="venta-modal-igv">S/ 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-2 fw-bold">
+                  <span>Total</span>
+                  <span id="venta-modal-total">S/ 0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              id="venta-modal-guardar"
+            >
+              <i class="bi bi-check-lg me-1"></i>Guardar Venta
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

@@ -165,214 +165,96 @@
             <i class="bi bi-person-circle fs-4 text-secondary"></i>
           </div>
         </header>
+
         <div class="d-flex align-items-center mb-4">
           <h4 class="mb-0">Compras</h4>
         </div>
 
         <!-- Pestañas de secciones -->
-        <ul class="nav nav-tabs mb-3 flex-nowrap overflow-auto" id="tabCompras" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="tab-compras"
-              data-bs-toggle="tab"
-              data-bs-target="#pane-compras"
-              type="button"
-              role="tab"
-            >
-              Compras
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="tab-proveedores"
-              data-bs-toggle="tab"
-              data-bs-target="#pane-proveedores"
-              type="button"
-              role="tab"
-            >
-              Proveedores
-            </button>
-          </li>
-        </ul>
-
-        <div class="tab-content" id="tabComprasContenido">
-          <!-- Registro de compra -->
-          <div class="tab-pane fade show active" id="pane-compras" role="tabpanel">
-            <div class="card shadow-sm">
-              <div
-                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+          <ul
+            class="nav nav-tabs mb-3 flex-nowrap overflow-auto"
+            id="tabCompras"
+            role="tablist"
+          >
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="tab-ordenes-compra"
+                data-bs-toggle="tab"
+                data-bs-target="#pane-ordenes-compra"
+                type="button"
+                role="tab"
               >
-                <span>Nueva Compra</span>
-                <button class="btn btn-success btn-sm" id="compra-nueva">
-                  <i class="bi bi-bag-plus me-1"></i>Nueva Compra
-                </button>
-              </div>
-              <div class="card-body">
-                <!-- Alerta -->
-                <div id="compra-alerta" class="alert alert-danger d-none mb-3"></div>
+                Órdenes de Compra
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="tab-proveedores"
+                data-bs-toggle="tab"
+                data-bs-target="#pane-proveedores"
+                type="button"
+                role="tab"
+              >
+                Proveedores
+              </button>
+            </li>
+          </ul>
 
-                <!-- Datos de la compra -->
-                <div class="row g-3 mb-4">
-                  <div class="col-md-4">
-                    <label for="compra-proveedor" class="form-label">Proveedor</label>
-                    <select class="form-select" id="compra-proveedor" required>
-                      <option value="" selected disabled>Seleccione un proveedor</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="compra-metodo-pago" class="form-label">Método de pago</label>
-                    <select class="form-select" id="compra-metodo-pago">
-                      <option value="" selected disabled>Seleccione</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3">
-                    <label for="compra-numero-documento" class="form-label">N° Documento</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="compra-numero-documento"
-                      placeholder="Ej: F001-00123"
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="compra-estado" class="form-label">Estado</label>
-                    <select class="form-select" id="compra-estado">
-                      <option value="COMPLETADA">Completada</option>
-                      <option value="PENDIENTE">Pendiente</option>
-                      <option value="ANULADA">Anulada</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- Agregar producto -->
-                <div class="row g-3 mb-4">
-                  <div class="col-md-3">
-                    <label for="compra-producto" class="form-label">Producto</label>
-                    <select class="form-select" id="compra-producto" required>
-                      <option value="" selected disabled>Seleccione un producto</option>
-                    </select>
-                  </div>
-                  <div class="col-md-2">
-                    <label for="compra-cantidad" class="form-label">Cantidad</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="compra-cantidad"
-                      value="1"
-                      min="1"
-                      required
-                    />
-                  </div>
-                  <div class="col-md-2">
-                    <label for="compra-costo" class="form-label">Costo Unit.</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      id="compra-costo"
-                      step="0.01"
-                      min="0"
-                      placeholder="0.00"
-                      required
-                    />
-                  </div>
-                  <div class="col-md-3 d-flex align-items-end">
-                    <button
-                      class="btn btn-primary w-100"
-                      id="compra-agregar-producto"
-                    >
-                      <i class="bi bi-plus-lg me-1"></i>Agregar
-                    </button>
-                  </div>
-                  <div class="col-md-2 d-flex align-items-end">
-                    <button
-                      class="btn btn-outline-secondary w-100"
-                      id="compra-nueva"
-                    >
-                      <i class="bi bi-eraser me-1"></i>Limpiar
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Carrito -->
-                <div class="table-responsive mb-3">
-                  <table class="table table-bordered align-middle">
-                    <thead class="table-light">
-                      <tr>
-                        <th>Producto</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-end">Costo Unit.</th>
-                        <th class="text-end">Subtotal</th>
-                        <th class="text-center">Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody id="compra-carrito"></tbody>
-                  </table>
-                </div>
-
-                <!-- Totales -->
-                <div class="d-flex justify-content-between mb-3">
-                  <div>
-                    <div class="d-flex justify-content-between">
-                      <span>Subtotal</span>
-                      <span id="compra-subtotal">S/ 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                      <span>IGV (18%)</span>
-                      <span id="compra-igv">S/ 0.00</span>
-                    </div>
-                    <div class="d-flex justify-content-between border-top pt-2 fw-bold">
-                      <span>Total</span>
-                      <span id="compra-total">S/ 0.00</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="d-grid">
+          <div class="tab-content" id="tabComprasContenido">
+            <!-- Órdenes de Compra (historial) -->
+            <div
+              class="tab-pane fade show active"
+              id="pane-ordenes-compra"
+              role="tabpanel"
+            >
+              <div class="card shadow-sm">
+                <div
+                  class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+                >
+                  <span>Historial de Órdenes de Compra</span>
                   <button
-                    class="btn btn-success btn-lg"
-                    id="compra-guardar"
+                    class="btn btn-success btn-sm"
+                    id="btn-iniciar-compra"
                   >
-                    <i class="bi bi-check-lg me-1"></i>Guardar Compra
+                    <i class="bi bi-bag-plus me-1"></i>Nueva Orden
                   </button>
                 </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Listado de compras -->
-          <div class="tab-pane fade" id="pane-listado-compras" role="tabpanel">
-            <div class="card shadow-sm">
-              <div class="card-header bg-white">
-                <span>Compras Registradas</span>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover align-middle">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Proveedor</th>
-                        <th>Documento</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                      </tr>
-                    </thead>
-                    <tbody id="pane-compras-listado"></tbody>
-                  </table>
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Proveedor</th>
+                          <th>Documento</th>
+                          <th>Fecha</th>
+                          <th>Total</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-ordenes-compra"></tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
           <!-- Proveedores -->
           <div class="tab-pane fade" id="pane-proveedores" role="tabpanel">
             <div class="card shadow-sm">
-              <div class="card-header bg-white">
+              <div
+                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
+              >
                 <span>Lista de Proveedores</span>
+                <button
+                  class="btn btn-primary btn-sm"
+                  id="btn-nuevo-proveedor"
+                >
+                  <i class="bi bi-plus-lg me-1"></i>Nuevo Proveedor
+                </button>
               </div>
               <div class="card-body">
                 <div class="table-responsive">
@@ -389,7 +271,7 @@
                         <th>Acciones</th>
                       </tr>
                     </thead>
-                    <tbody id="pane-proveedores-listado"></tbody>
+                    <tbody id="tbody-proveedores"></tbody>
                   </table>
                 </div>
               </div>
@@ -399,8 +281,219 @@
       </main>
     </div>
 
+    <!-- ============ MODAL: NUEVA COMPRA ============ -->
+    <div
+      class="modal fade"
+      id="modalNuevaCompra"
+      tabindex="-1"
+      aria-labelledby="modalNuevaCompraLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevaCompraLabel">
+              <i class="bi bi-cart-plus me-2"></i>Nueva Compra
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="compra-modal-alerta" class="alert alert-danger d-none mb-3"></div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-4">
+                <label for="compra-modal-proveedor" class="form-label">Proveedor</label>
+                <select class="form-select" id="compra-modal-proveedor" required>
+                  <option value="" selected disabled>Seleccione un proveedor</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="compra-modal-metodo-pago" class="form-label">Método de pago</label>
+                <select class="form-select" id="compra-modal-metodo-pago">
+                  <option value="" selected disabled>Seleccione</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label for="compra-modal-numero-documento" class="form-label">N° Documento</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="compra-modal-numero-documento"
+                  placeholder="Ej: F001-00123"
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="compra-modal-estado" class="form-label">Estado</label>
+                <select class="form-select" id="compra-modal-estado">
+                  <option value="COMPLETADA">Completada</option>
+                  <option value="PENDIENTE">Pendiente</option>
+                  <option value="ANULADA">Anulada</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <label for="compra-modal-producto" class="form-label">Producto</label>
+                <select class="form-select" id="compra-modal-producto" required>
+                  <option value="" selected disabled>Seleccione un producto</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <label for="compra-modal-cantidad" class="form-label">Cantidad</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="compra-modal-cantidad"
+                  value="1"
+                  min="1"
+                  required
+                />
+              </div>
+              <div class="col-md-2">
+                <label for="compra-modal-costo" class="form-label">Costo Unit.</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="compra-modal-costo"
+                  step="0.01"
+                  min="0"
+                  placeholder="0.00"
+                  required
+                />
+              </div>
+              <div class="col-md-3 d-flex align-items-end">
+                <button
+                  class="btn btn-primary w-100"
+                  id="compra-modal-agregar-producto"
+                >
+                  <i class="bi bi-plus-lg me-1"></i>Agregar
+                </button>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button
+                  class="btn btn-outline-secondary w-100"
+                  type="button"
+                  id="compra-modal-limpiar"
+                >
+                  <i class="bi bi-eraser me-1"></i>Limpiar
+                </button>
+              </div>
+            </div>
+
+            <div class="table-responsive mb-3">
+              <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                  <tr>
+                    <th>Producto</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-end">Costo Unit.</th>
+                    <th class="text-end">Subtotal</th>
+                    <th class="text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="compra-modal-carrito"></tbody>
+              </table>
+            </div>
+
+            <div class="d-flex justify-content-between mb-3">
+              <div>
+                <div class="d-flex justify-content-between">
+                  <span>Subtotal</span>
+                  <span id="compra-modal-subtotal">S/ 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <span>IGV (18%)</span>
+                  <span id="compra-modal-igv">S/ 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between border-top pt-2 fw-bold">
+                  <span>Total</span>
+                  <span id="compra-modal-total">S/ 0.00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              class="btn btn-success"
+              id="compra-modal-guardar"
+            >
+              <i class="bi bi-check-lg me-1"></i>Guardar Compra
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ MODAL: NUEVO PROVEEDOR ============ -->
+    <div
+      class="modal fade"
+      id="modalNuevoProveedor"
+      tabindex="-1"
+      aria-labelledby="modalNuevoProveedorLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalNuevoProveedorLabel">
+              <i class="bi bi-person-plus me-2"></i>Nuevo Proveedor
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="proveedor-modal-alerta" class="alert alert-danger d-none mb-3"></div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="proveedor-modal-persona" class="form-label">Persona</label>
+                <select class="form-select" id="proveedor-modal-persona" required>
+                  <option value="" selected disabled>Seleccione una persona</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="proveedor-modal-razon-social" class="form-label">Razón Social</label>
+                <input type="text" class="form-control" id="proveedor-modal-razon-social" placeholder="Razón Social" />
+              </div>
+              <div class="col-md-4">
+                <label for="proveedor-modal-telefono" class="form-label">Teléfono</label>
+                <input type="text" class="form-control" id="proveedor-modal-telefono" placeholder="Teléfono" />
+              </div>
+              <div class="col-md-4">
+                <label for="proveedor-modal-email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="proveedor-modal-email" placeholder="email@ejemplo.com" />
+              </div>
+              <div class="col-md-4">
+                <label for="proveedor-modal-direccion" class="form-label">Dirección</label>
+                <input type="text" class="form-control" id="proveedor-modal-direccion" placeholder="Dirección" />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+            <button class="btn btn-primary" id="proveedor-modal-guardar">Guardar Proveedor</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Modal Configuración -->
     <div
       class="modal fade"
       id="modalConfiguracion"
@@ -426,22 +519,14 @@
             <p class="text-muted small">Selecciona el tema del sistema.</p>
             <div class="row g-3">
               <div class="col-6">
-                <button
-                  type="button"
-                  class="card tema-opcion p-3 text-center"
-                  data-theme-option="claro"
-                >
+                <button type="button" class="card tema-opcion p-3 text-center" data-theme-option="claro">
                   <i class="bi bi-brightness-high-fill fs-3 mb-2"></i>
                   <div class="fw-semibold">Claro</div>
                   <small class="text-muted">Tema predeterminado</small>
                 </button>
               </div>
               <div class="col-6">
-                <button
-                  type="button"
-                  class="card tema-opcion p-3 text-center"
-                  data-theme-option="oscuro"
-                >
+                <button type="button" class="card tema-opcion p-3 text-center" data-theme-option="oscuro">
                   <i class="bi bi-moon-stars-fill fs-3 mb-2"></i>
                   <div class="fw-semibold">Oscuro</div>
                   <small class="text-muted">Reduce el brillo</small>
@@ -450,9 +535,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Cerrar
-            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
           </div>
         </div>
       </div>

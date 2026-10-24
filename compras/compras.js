@@ -4,52 +4,43 @@ let proveedores = [];
 let productos = [];
 let metodosPago = [];
 let carrito = [];
+let comprasDia = [];
 
-const selectProveedor = document.getElementById("compra-proveedor");
-const selectProducto = document.getElementById("compra-producto");
-const selectMetodoPago = document.getElementById("compra-metodo-pago");
-const inputCantidad = document.getElementById("compra-cantidad");
-const inputCosto = document.getElementById("compra-costo");
-const btnAgregar = document.getElementById("compra-agregar-producto");
-const tblCarrito = document.querySelector("#compra-carrito tbody");
-const lblSubtotal = document.getElementById("compra-subtotal");
-const lblIGV = document.getElementById("compra-igv");
-const lblTotal = document.getElementById("compra-total");
-const btnGuardar = document.getElementById("compra-guardar");
-const btnNueva = document.getElementById("compra-nueva");
-const alerta = document.getElementById("compra-alerta");
+const btnIniciarCompra = document.getElementById("btn-iniciar-compra");
+const modalCompra = document.getElementById("modalNuevaCompra");
+const btnGuardarCompra = modalCompra.querySelector("#compra-modal-guardar");
+const tbodyCompras = document.querySelector("#tbody-ordenes-compra");
+const selectProveedor = document.getElementById("compra-modal-proveedor");
+const selectMetodoPago = document.getElementById("compra-modal-metodo-pago");
+const selectProducto = document.getElementById("compra-modal-producto");
+const inputCantidad = document.getElementById("compra-modal-cantidad");
+const inputCosto = document.getElementById("compra-modal-costo");
+const btnAgregar = document.getElementById("compra-modal-agregar-producto");
+const btnLimpiar = document.getElementById("compra-modal-limpiar");
+const tblCarrito = document.querySelector("#compra-modal-carrito tbody");
+const lblSubtotal = document.getElementById("compra-modal-subtotal");
+const lblIGV = document.getElementById("compra-modal-igv");
+const lblTotal = document.getElementById("compra-modal-total");
+const alerta = document.getElementById("compra-modal-alerta");
 
-function mostrarAlerta(msg) {
-  if (alerta) { alerta.textContent = msg; alerta.classList.remove("d-none"); }
+// --- Proveedores ---
+const btnNuevoProveedor = document.getElementById("btn-nuevo-proveedor");
+const modalProv = document.getElementById("modalNuevoProveedor");
+const btnGuardarProv = modalProv.querySelector("#proveedor-modal-guardar");
+const tbodyProv = document.querySelector("#tbody-proveedores");
+const alertaProv = document.getElementById("proveedor-modal-alerta");
+
+function mostrarAlerta(el, msg) {
+  if (el) { el.textContent = msg; el.classList.remove("d-none"); }
 }
-function limpiarAlerta() {
-  if (alerta) { alerta.textContent = ""; alerta.classList.add("d-none"); }
+function limpiarAlerta(el) {
+  if (el) { el.textContent = ""; el.classList.add("d-none"); }
 }
 function irALogin(err) {
   if (err && err.status === 401) { window.location.href = "../login/login.html"; return true; }
   return false;
 }
 function fm(n) { return "S/ " + (n || 0).toFixed(2); }
-
-async function cargarInicial() {
-  limpiarAlerta();
-  try {
-    const [prov, prod, mp] = await Promise.all([
-      api("GET", "/api/proveedores"),
-      api("GET", "/api/productos"),
-      api("GET", "/api/metodos-pago")
-    ]);
-    proveedores = prov || [];
-    productos = prod || [];
-    metodosPago = mp || [];
-    llenarSelect(selectProveedor, proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
-    llenarSelect(selectProducto, productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
-    llenarSelect(selectMetodoPago, metodosPago, p => p.id, p => p.nombre);
-    await listarCompras();
-  } catch (err) {
-    if (!irALogin(err)) mostrarAlerta(err.mensaje || "No se pudo cargar.");
-  }
-}
 
 function llenarSelect(select, items, idFn, textoFn) {
   if (!select) return;
@@ -64,37 +55,110 @@ function llenarSelect(select, items, idFn, textoFn) {
   });
 }
 
-async function listarCompras() {
-  const tbody = document.querySelector("#pane-compras-listado tbody");
-  if (!tbody) return;
+async function cargarDatosIniciales() {
+  limpiarAlerta(alerta);
+  try {
+    const [prov, prod, mp] = await Promise.all([
+      api("GET", "/api/proveedores"),
+      api("GET", "/api/productos"),
+      api("GET", "/api/metodos-pago")
+    ]);
+    proveedores = prov || [];
+    productos = prod || [];
+    metodosPago = mp || [];
+    llenarSelect(selectProveedor, proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
+    llenarSelect(selectMetodoPago, metodosPago, p => p.id, p => p.nombre);
+    llenarSelect(selectProducto, productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
+    await listarComprasDia();
+    await listarProveedores();
+  } catch (err) {
+    if (!irALogin(err)) mostrarAlerta(alerta, err.mensaje || "No se pudo cargar.");
+  }
+}
+
+async function listarComprasDia() {
+  if (!tbodyCompras) return;
   try {
     const compras = (await api("GET", "/api/compras")) || [];
-    tbody.innerHTML = "";
+    comprasDia = compras;
+    tbodyCompras.innerHTML = "";
     if (!compras.length) {
       const tr = document.createElement("tr");
       const td = document.createElement("td");
       td.colSpan = 8;
       td.className = "text-center text-muted";
-      td.textContent = "No hay compras registradas.";
+      td.textContent = "No hay órdenes de compra registradas.";
       tr.appendChild(td);
-      tbody.appendChild(tr);
+      tbodyCompras.appendChild(tr);
       return;
     }
     compras.forEach(c => {
       const tr = document.createElement("tr");
+      const estado = c.estado || "COMPLETADA";
+      const activo = estado !== "0" && estado !== "ANULADA";
+      if (!activo) tr.classList.add("text-muted", "opacity-75");
       tr.innerHTML =
         "<td>" + (c.id || "") + "</td>" +
         "<td>" + (c.nombreProveedor || "") + "</td>" +
         "<td>" + (c.numeroDocumento || "") + "</td>" +
         "<td>" + (c.fCompra || "") + "</td>" +
         "<td>" + fm(c.total) + "</td>" +
-        "<td><span class='badge " + (c.estado === "COMPLETADA" ? "text-bg-success" : "text-bg-secondary") + "'>" + (c.estado || "") + "</span></td>" +
-        "<td><button class='btn btn-sm btn-outline-primary' title='Ver'><i class='bi bi-eye'></i></button></td>";
-      tbody.appendChild(tr);
+        "<td><span class='badge " + (activo ? "text-bg-success" : "text-bg-secondary") + "'>" + estado + "</span></td>" +
+        "<td><div class='d-flex gap-1'>" +
+        (activo
+          ? '<button class="btn btn-sm btn-outline-primary" title="Ver" data-accion="ver" data-id="' + c.id + '"><i class="bi bi-eye"></i></button>' +
+            '<button class="btn btn-sm btn-outline-danger" title="Anular" data-accion="anular" data-id="' + c.id + '"><i class="bi bi-trash"></i></button>'
+          : '<button class="btn btn-sm btn-outline-secondary" title="Anulado" disabled><i class="bi bi-trash opacity-50"></i></button>') +
+        "</div></td>";
+      tbodyCompras.appendChild(tr);
     });
   } catch (err) {
     if (!irALogin(err)) {
-      tbody.innerHTML = "<tr><td colspan='8' class='text-center text-danger'>Error: " + (err.mensaje || "No se pudo cargar.") + "</td></tr>";
+      tbodyCompras.innerHTML = "<tr><td colspan='8' class='text-center text-danger'>Error: " + (err.mensaje || "No se pudo cargar.") + "</td></tr>";
+    }
+  }
+}
+
+async function listarProveedores() {
+  if (!tbodyProv) return;
+  try {
+    const provs = (await api("GET", "/api/proveedores")) || [];
+    proveedores = provs;
+    tbodyProv.innerHTML = "";
+    if (!provs.length) {
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 9;
+      td.className = "text-center text-muted";
+      td.textContent = "No hay proveedores registrados.";
+      tr.appendChild(td);
+      tbodyProv.appendChild(tr);
+      return;
+    }
+    provs.forEach((p, i) => {
+      const tr = document.createElement("tr");
+      const activo = p.estado !== "0" && p.estado !== false;
+      if (!activo) tr.classList.add("text-muted", "opacity-75");
+      tr.innerHTML =
+        "<td>" + (i + 1) + "</td>" +
+        "<td>" + (p.nDocumento || "") + "</td>" +
+        "<td>" + (p.nombrePersona || "") + "</td>" +
+        "<td>" + (p.contacto || "") + "</td>" +
+        "<td>" + (p.telefonoContacto || "") + "</td>" +
+        "<td>" + (p.emailContacto || "") + "</td>" +
+        "<td>" + (p.direccion || "") + "</td>" +
+        "<td><span class='badge " + (activo ? "text-bg-success" : "text-bg-secondary") + "'>" + (activo ? "Activo" : "Inactivo") + "</span></td>" +
+        "<td><div class='d-flex gap-1'>" +
+        (activo
+          ? '<button class="btn btn-sm btn-outline-primary" title="Editar" data-accion="editar" data-id="' + p.id + '"><i class="bi bi-pencil"></i></button>' +
+            '<button class="btn btn-sm btn-outline-danger" title="Desactivar" data-accion="desactivar" data-id="' + p.id + '"><i class="bi bi-toggle-on"></i></button>'
+          : '<button class="btn btn-sm btn-outline-secondary" title="Inactivo" disabled><i class="bi bi-toggle-off opacity-50"></i></button>') +
+        "</div></td>";
+      tbodyProv.appendChild(tr);
+    });
+  } catch (err) {
+    if (!irALogin(err)) {
+      tbodyProv.innerHTML = "<tr><td colspan='9' class='text-center text-danger'>Error: " + (err.mensaje || "No se pudo cargar.") + "</td></tr>";
     }
   }
 }
@@ -107,7 +171,6 @@ function calcularTotales() {
   if (lblIGV) lblIGV.textContent = fm(igv);
   if (lblTotal) lblTotal.textContent = fm(total);
 }
-
 function renderCarrito() {
   if (!tblCarrito) return;
   tblCarrito.innerHTML = "";
@@ -129,8 +192,8 @@ if (btnAgregar) {
     const idProd = selectProducto ? selectProducto.value : null;
     const cantidad = inputCantidad ? parseInt(inputCantidad.value) : 0;
     const costo = inputCosto ? parseFloat(inputCosto.value) : 0;
-    if (!idProd || !cantidad || cantidad <= 0) { mostrarAlerta("Seleccione producto y cantidad válida."); return; }
-    if (costo <= 0) { mostrarAlerta("Ingrese el costo unitario."); return; }
+    if (!idProd || !cantidad || cantidad <= 0) { mostrarAlerta(alerta, "Seleccione producto y cantidad válida."); return; }
+    if (costo <= 0) { mostrarAlerta(alerta, "Ingrese el costo unitario."); return; }
     const producto = productos.find(p => String(p.id) === String(idProd));
     if (!producto) return;
     const existente = carrito.findIndex(d => String(d.idProducto) === String(idProd));
@@ -161,16 +224,24 @@ if (tblCarrito) {
   });
 }
 
-if (btnGuardar) {
-  btnGuardar.addEventListener("click", async () => {
-    limpiarAlerta();
+if (btnLimpiar) {
+  btnLimpiar.addEventListener("click", () => {
+    carrito = [];
+    renderCarrito();
+    limpiarAlerta(alerta);
+  });
+}
+
+if (btnGuardarCompra) {
+  btnGuardarCompra.addEventListener("click", async () => {
+    limpiarAlerta(alerta);
     const idProveedor = selectProveedor ? selectProveedor.value : null;
     const idMetodoPago = selectMetodoPago ? selectMetodoPago.value : null;
-    const numeroDocumento = document.getElementById("compra-numero-documento") ? document.getElementById("compra-numero-documento").value : "";
-    const estado = document.getElementById("compra-estado") ? document.getElementById("compra-estado").value : "COMPLETADA";
-    if (!idProveedor) { mostrarAlerta("Seleccione un proveedor."); return; }
-    if (!numeroDocumento) { mostrarAlerta("Ingrese número de documento."); return; }
-    if (!carrito.length) { mostrarAlerta("Agregue al menos un producto."); return; }
+    const numeroDocumento = document.getElementById("compra-modal-numero-documento") ? document.getElementById("compra-modal-numero-documento").value : "";
+    const estado = document.getElementById("compra-modal-estado") ? document.getElementById("compra-modal-estado").value : "COMPLETADA";
+    if (!idProveedor) { mostrarAlerta(alerta, "Seleccione un proveedor."); return; }
+    if (!numeroDocumento) { mostrarAlerta(alerta, "Ingrese número de documento."); return; }
+    if (!carrito.length) { mostrarAlerta(alerta, "Agregue al menos un producto."); return; }
 
     const payload = {
       idProveedor: Number(idProveedor),
@@ -185,27 +256,100 @@ if (btnGuardar) {
       }))
     };
 
-    btnGuardar.disabled = true;
+    btnGuardarCompra.disabled = true;
     try {
       if (!tieneCsrf()) await yo();
       await api("POST", "/api/compras", payload);
       carrito = [];
       renderCarrito();
-      await listarCompras();
+      limpiarAlerta(alerta);
+      bootstrap.Modal.getInstance(modalCompra).hide();
+      await listarComprasDia();
     } catch (err) {
-      if (!irALogin(err)) mostrarAlerta(err.mensaje || "No se pudo registrar la compra.");
+      if (!irALogin(err)) mostrarAlerta(alerta, err.mensaje || "No se pudo registrar la compra.");
     } finally {
-      btnGuardar.disabled = false;
+      btnGuardarCompra.disabled = false;
     }
   });
 }
 
-if (btnNueva) {
-  btnNueva.addEventListener("click", () => {
+if (btnIniciarCompra) {
+  btnIniciarCompra.addEventListener("click", () => {
     carrito = [];
     renderCarrito();
-    limpiarAlerta();
+    limpiarAlerta(alerta);
+    const mProv = document.getElementById("compra-modal-proveedor");
+    const mDoc = document.getElementById("compra-modal-numero-documento");
+    const mEstado = document.getElementById("compra-modal-estado");
+    if (mProv) mProv.selectedIndex = 0;
+    if (mDoc) mDoc.value = "";
+    if (mEstado) mEstado.value = "COMPLETADA";
+    bootstrap.Modal.getOrCreateInstance(modalCompra).show();
   });
 }
 
-document.addEventListener("DOMContentLoaded", cargarInicial);
+tbodyCompras.addEventListener("click", async (e) => {
+  const boton = e.target.closest("button[data-accion]");
+  if (!boton) return;
+  const id = boton.dataset.id;
+  const compra = comprasDia.find(c => String(c.id) === String(id));
+  if (!compra) return;
+  if (boton.dataset.accion === "ver") {
+    alert("Detalles de compra #" + compra.id + "\nProveedor: " + (compra.nombreProveedor || "") + "\nTotal: " + fm(compra.total) + "\nEstado: " + (compra.estado || ""));
+  } else if (boton.dataset.accion === "anular") {
+    if (!window.confirm("¿Anular la compra #" + compra.id + "?")) return;
+    try {
+      if (!tieneCsrf()) await yo();
+      await api("DELETE", "/api/compras/" + compra.id);
+      await listarComprasDia();
+    } catch (err) {
+      if (!irALogin(err)) window.alert(err.mensaje || "No se pudo anular la compra.");
+    }
+  }
+});
+
+// --- Proveedores CRUD ---
+if (btnNuevoProveedor) {
+  btnNuevoProveedor.addEventListener("click", () => {
+    limpiarAlerta(alertaProv);
+    const form = modalProv.querySelector("form");
+    if (form) form.reset();
+    bootstrap.Modal.getOrCreateInstance(modalProv).show();
+  });
+}
+
+if (btnGuardarProv) {
+  btnGuardarProv.addEventListener("click", async () => {
+    limpiarAlerta(alertaProv);
+    const razonSocial = document.getElementById("proveedor-modal-razon-social").value.trim();
+    const telefono = document.getElementById("proveedor-modal-telefono").value.trim();
+    const email = document.getElementById("proveedor-modal-email").value.trim();
+    const direccion = document.getElementById("proveedor-modal-direccion").value.trim();
+    if (!razonSocial) { mostrarAlerta(alertaProv, "La razón social es obligatoria."); return; }
+
+    // No hay endpoint /api/personas, se crea proveedor vinculando una persona existente.
+    // Como no hay lista de personas, se asume que se usará un ID por defecto o se deja para backend.
+    // Por ahora se envía solo los campos disponibles; el backend requiere idPersona.
+    mostrarAlerta(alertaProv, "Requiere seleccionar una persona válida (funcionalidad pendiente de endpoint /api/personas).");
+  });
+}
+
+tbodyProv.addEventListener("click", async (e) => {
+  const boton = e.target.closest("button[data-accion]");
+  if (!boton) return;
+  const id = boton.dataset.id;
+  const prov = proveedores.find(p => String(p.id) === String(id));
+  if (!prov) return;
+  if (boton.dataset.accion === "desactivar") {
+    if (!window.confirm("¿Desactivar al proveedor " + prov.nombrePersona + "?")) return;
+    try {
+      if (!tieneCsrf()) await yo();
+      await api("DELETE", "/api/proveedores/" + prov.id);
+      await listarProveedores();
+    } catch (err) {
+      if (!irALogin(err)) window.alert(err.mensaje || "No se pudo desactivar el proveedor.");
+    }
+  }
+});
+
+document.addEventListener("DOMContentLoaded", cargarDatosIniciales);
