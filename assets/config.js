@@ -2,6 +2,8 @@
 const URL_DESARROLLO = "http://127.0.0.1:8080";
 const URL_PRODUCCION = "https://bodega-tia-matha-backend.onrender.com";
 
+export const API_KEY = "";
+
 function esEntornoDesarrollo() {
   const host = window.location.hostname;
 

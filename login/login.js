@@ -1,4 +1,4 @@
-import { API_BASE } from "../assets/config.js";
+import { API_BASE, API_KEY } from "../assets/config.js";
 
 let CSRF_HEADER = "X-CSRF-TOKEN";
 
@@ -69,6 +69,9 @@ function errorDeRespuesta(res, datos) {
 
 async function ejecutar(metodo, ruta, cuerpo, opciones) {
   const headers = { Accept: "application/json" };
+  if (API_KEY) {
+    headers["X-API-Key"] = API_KEY;
+  }
   if (cuerpo !== undefined) {
     headers["Content-Type"] = "application/json";
   }
