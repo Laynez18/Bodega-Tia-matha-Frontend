@@ -4,27 +4,12 @@ const modal = document.getElementById("modalNuevoEmpleado");
 const form = modal.querySelector("form");
 const btnGuardar = modal.querySelector(".modal-footer .btn-primary");
 const tbody = document.querySelector("#pane-empleados tbody");
+const titulo = document.getElementById("modalNuevoEmpleadoLabel");
 
-// Cada catálogo: endpoint, select destino y nombres de campo posibles en el JSON.
 const CATALOGOS = [
-  {
-    ruta: "/api/tipos-identidad",
-    select: "empleado-tipo-doc",
-    id: ["idTipoIdentidad", "id"],
-    texto: ["nTipoIdentidad", "nombre"],
-  },
-  {
-    ruta: "/api/cargos",
-    select: "empleado-cargo",
-    id: ["idCargo", "id"],
-    texto: ["nCargo", "nombre"],
-  },
-  {
-    ruta: "/api/contratos",
-    select: "empleado-contrato",
-    id: ["idContrato", "id"],
-    texto: ["nContrato", "nombre"],
-  },
+  { ruta: "/api/tipos-identidad", select: "empleado-tipo-doc", id: ["idTipoIdentidad", "id"], texto: ["nTipoIdentidad", "nombre"] },
+  { ruta: "/api/cargos", select: "empleado-cargo", id: ["idCargo", "id"], texto: ["nCargo", "nombre"] },
+  { ruta: "/api/contratos", select: "empleado-contrato", id: ["idContrato", "id"], texto: ["nContrato", "nombre"] },
 ];
 
 const alerta = document.createElement("div");
@@ -32,14 +17,11 @@ alerta.className = "alert alert-danger d-none";
 form.prepend(alerta);
 
 function leer(obj, claves) {
-  if (!obj) {
-    return undefined;
-  }
+  if (!obj) return undefined;
   const clave = claves.find((c) => obj[c] !== undefined && obj[c] !== null);
   return clave === undefined ? undefined : obj[clave];
 }
 
-// Acepta texto o un objeto anidado ({ nCargo: "..." }).
 function aTexto(valor) {
   if (valor && typeof valor === "object") {
     return Object.values(valor).find((v) => typeof v === "string") || "";
@@ -58,14 +40,9 @@ function limpiarError() {
 }
 
 function irALogin(err) {
-  if (err.status === 401) {
-    window.location.href = "../login/login.html";
-    return true;
-  }
+  if (err.status === 401) { window.location.href = "../login/login.html"; return true; }
   return false;
 }
-
-/* ---------- Catálogos de los selects ---------- */
 
 function llenarSelect(select, items, catalogo) {
   const placeholder = select.querySelector('option[value=""]');
@@ -85,24 +62,19 @@ async function cargarCatalogo(catalogo) {
     llenarSelect(select, items || [], catalogo);
     return true;
   } catch (err) {
-    if (!irALogin(err)) {
-      console.error("No se pudo cargar " + catalogo.ruta, err.mensaje);
-    }
+    if (!irALogin(err)) console.error("No se pudo cargar " + catalogo.ruta, err.mensaje);
     return false;
   }
 }
 
 let catalogosCargados = false;
+let editando = null;
 
 async function cargarCatalogos() {
-  if (catalogosCargados) {
-    return;
-  }
+  if (catalogosCargados) return;
   const resultados = await Promise.all(CATALOGOS.map(cargarCatalogo));
   catalogosCargados = resultados.every(Boolean);
 }
-
-/* ---------- Listado ---------- */
 
 function celda(texto) {
   const td = document.createElement("td");
@@ -116,15 +88,12 @@ function filaEmpleado(e, indice) {
 
   const nombre =
     leer(e, ["nombreCompleto"]) ||
-    [
-      leer(persona, ["nombre"]),
-      leer(persona, ["apPaterno"]),
-      leer(persona, ["apMaterno"]),
-    ]
-      .filter(Boolean)
-      .join(" ");
+    [leer(persona, ["nombre"]), leer(persona, ["apPaterno"]), leer(persona, ["apMaterno"])].filter(Boolean).join(" ");
 
-  tr.appendChild(celda(leer(e, ["idEmpleado", "id"]) ?? indice + 1));
+  const idEmp = leer(e, ["idEmpleado", "id"]);
+  const activo = leer(e, ["estado"]) !== "0";
+
+  tr.appendChild(celda(idEmp ?? indice + 1));
   tr.appendChild(celda(aTexto(leer(persona, ["nDocumento"]))));
   tr.appendChild(celda(nombre));
   tr.appendChild(celda(aTexto(leer(e, ["cargo", "nCargo"]))));
@@ -133,9 +102,7 @@ function filaEmpleado(e, indice) {
 
   const tdEstado = document.createElement("td");
   const badge = document.createElement("span");
-  const activo = leer(e, ["estado"]) !== "0";
-  badge.className =
-    "badge " + (activo ? "text-bg-success" : "text-bg-secondary");
+  badge.className = "badge " + (activo ? "text-bg-success" : "text-bg-secondary");
   badge.textContent = activo ? "Activo" : "Inactivo";
   tdEstado.appendChild(badge);
   tr.appendChild(tdEstado);
@@ -143,8 +110,10 @@ function filaEmpleado(e, indice) {
   const tdAcciones = document.createElement("td");
   tdAcciones.innerHTML =
     '<div class="d-flex gap-1">' +
-    '<button class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i></button>' +
-    '<button class="btn btn-outline-primary btn-sm" title="Desactivar"><i class="bi bi-toggle-on"></i></button>' +
+    '<button class="btn btn-outline-primary btn-sm" data-accion="editar" data-id="' + idEmp + '"><i class="bi bi-pencil"></i></button>' +
+    (activo
+      ? '<button class="btn btn-outline-primary btn-sm" data-accion="desactivar" data-id="' + idEmp + '" title="Desactivar"><i class="bi bi-toggle-on"></i></button>'
+      : '<button class="btn btn-outline-secondary btn-sm" data-accion="activar" data-id="' + idEmp + '" title="Activar" disabled><i class="bi bi-toggle-off opacity-50"></i></button>') +
     "</div>";
   tr.appendChild(tdAcciones);
   return tr;
@@ -168,26 +137,13 @@ async function listarEmpleados() {
     }
     tbody.replaceChildren(...empleados.map(filaEmpleado));
   } catch (err) {
-    if (!irALogin(err)) {
-      tbody.replaceChildren(filaMensaje(err.mensaje || "No se pudo cargar."));
-    }
+    if (!irALogin(err)) tbody.replaceChildren(filaMensaje(err.mensaje || "No se pudo cargar."));
   }
 }
 
-/* ---------- Alta ---------- */
-
-function valor(id) {
-  return document.getElementById(id).value.trim();
-}
-
-function textoONulo(id) {
-  return valor(id) || null;
-}
-
-function numeroONulo(id) {
-  const v = valor(id);
-  return v === "" ? null : Number(v);
-}
+function valor(id) { return document.getElementById(id).value.trim(); }
+function textoONulo(id) { return valor(id) || null; }
+function numeroONulo(id) { const v = valor(id); return v === "" ? null : Number(v); }
 
 function armarPayload() {
   return {
@@ -216,15 +172,9 @@ function armarPayload() {
 
 function validar(payload) {
   const errores = [];
-  if (!payload.persona.idTipoIdentidad) {
-    errores.push("El tipo de documento es obligatorio.");
-  }
-  if (!payload.persona.nDocumento) {
-    errores.push("El número de documento es obligatorio.");
-  }
-  if (!payload.persona.nombre) {
-    errores.push("Los nombres son obligatorios.");
-  }
+  if (!payload.persona.idTipoIdentidad) errores.push("El tipo de documento es obligatorio.");
+  if (!payload.persona.nDocumento) errores.push("El número de documento es obligatorio.");
+  if (!payload.persona.nombre) errores.push("Los nombres son obligatorios.");
   return errores;
 }
 
@@ -232,33 +182,95 @@ async function guardarEmpleado() {
   limpiarError();
   const payload = armarPayload();
   const errores = validar(payload);
-  if (errores.length) {
-    mostrarError(errores.join(" "));
-    return;
-  }
+  if (errores.length) { mostrarError(errores.join(" ")); return; }
 
   btnGuardar.disabled = true;
   try {
-    if (!tieneCsrf()) {
-      await yo();
+    if (!tieneCsrf()) await yo();
+    if (editando) {
+      await api("PUT", "/api/empleados/" + editando, payload);
+    } else {
+      await api("POST", "/api/empleados", payload);
     }
-    await api("POST", "/api/empleados", payload);
     form.reset();
     bootstrap.Modal.getInstance(modal).hide();
+    editando = null;
     await listarEmpleados();
   } catch (err) {
-    if (!irALogin(err)) {
-      mostrarError(err.mensaje || "No se pudo guardar el empleado.");
-    }
+    if (!irALogin(err)) mostrarError(err.mensaje || "No se pudo guardar el empleado.");
   } finally {
     btnGuardar.disabled = false;
   }
 }
 
+async function desactivarEmpleado(idEmp) {
+  if (!window.confirm("¿Desactivar al empleado #" + idEmp + "?")) return;
+  try {
+    if (!tieneCsrf()) await yo();
+    await api("DELETE", "/api/empleados/" + idEmp);
+    await listarEmpleados();
+  } catch (err) {
+    if (!irALogin(err)) alert(err.mensaje || "No se pudo desactivar el empleado.");
+  }
+}
+
+function cargarDatosEdicion(emp) {
+  const persona = emp.persona || emp;
+  document.getElementById("empleado-tipo-doc").value = leer(persona, ["idTipoIdentidad"]) ?? "";
+  document.getElementById("empleado-documento").value = aTexto(leer(persona, ["nDocumento"]));
+  document.getElementById("empleado-nombre").value = aTexto(leer(persona, ["nombre"]));
+  document.getElementById("empleado-ap-paterno").value = aTexto(leer(persona, ["apPaterno"]));
+  document.getElementById("empleado-ap-materno").value = aTexto(leer(persona, ["apMaterno"]));
+  document.getElementById("empleado-nacimiento").value = leer(persona, ["fNacimiento"]) || "";
+  document.getElementById("empleado-genero").value = leer(persona, ["genero"]) || "";
+  document.getElementById("empleado-celular").value = aTexto(leer(persona, ["celular"]));
+  document.getElementById("empleado-email").value = aTexto(leer(persona, ["email"]));
+  document.getElementById("empleado-direccion").value = aTexto(leer(persona, ["direccion"]));
+  document.getElementById("empleado-distrito").value = leer(persona, ["idDistrito"]) ?? "";
+  document.getElementById("empleado-cargo").value = leer(emp, ["idCargo"]) ?? "";
+  document.getElementById("empleado-contrato").value = leer(emp, ["idContrato"]) ?? "";
+  document.getElementById("empleado-turno").value = aTexto(leer(emp, ["turno"]));
+  document.getElementById("empleado-salario").value = leer(emp, ["salario"]) || "";
+  document.getElementById("empleado-fondo-pension").value = aTexto(leer(emp, ["fondoPension"]));
+  document.getElementById("empleado-hps").value = aTexto(leer(emp, ["nHps"]));
+  document.getElementById("empleado-essalud").value = aTexto(leer(emp, ["essalud"]));
+}
+
 modal.addEventListener("show.bs.modal", () => {
   limpiarError();
   cargarCatalogos();
+  if (editando) {
+    titulo.textContent = "Editar Empleado";
+    api("GET", "/api/empleados/" + editando).then(emp => {
+      cargarDatosEdicion(emp);
+    }).catch(err => {
+      if (!irALogin(err)) mostrarError(err.mensaje || "No se pudo cargar el empleado.");
+    });
+  } else {
+    titulo.textContent = "Nuevo Empleado";
+    form.reset();
+  }
 });
+
+modal.addEventListener("hidden.bs.modal", () => {
+  editando = null;
+  form.reset();
+  limpiarError();
+  titulo.textContent = "Nuevo Empleado";
+});
+
 btnGuardar.addEventListener("click", guardarEmpleado);
+
+tbody.addEventListener("click", (e) => {
+  const boton = e.target.closest("button[data-accion]");
+  if (!boton) return;
+  const id = boton.dataset.id;
+  if (boton.dataset.accion === "editar") {
+    editando = id;
+    bootstrap.Modal.getOrCreateInstance(modal).show();
+  } else if (boton.dataset.accion === "desactivar") {
+    desactivarEmpleado(id);
+  }
+});
 
 listarEmpleados();

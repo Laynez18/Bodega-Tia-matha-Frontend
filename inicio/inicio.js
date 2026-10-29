@@ -29,12 +29,13 @@ async function cargarKPIs() {
     document.getElementById("kpi-productos-cambio").innerHTML =
       '<i class="bi bi-exclamation-triangle"></i> ' + bajoStock + " por reponer";
 
-    // Créditos / cuentas por cobrar
-    const creditos = (await api("GET", "/api/creditos")) || [];
-    const saldoTotal = creditos.reduce((s, c) => s + Number(c.saldo || 0), 0);
+    // Créditos / cuentas por cobrar (usando ventas con saldo pendiente)
+    const ventas = (await api("GET", "/api/ventas")) || [];
+    const creditosPendientes = ventas.filter(v => (v.saldo || 0) > 0);
+    const saldoTotal = creditosPendientes.reduce((s, c) => s + Number(c.saldo || 0), 0);
     document.getElementById("kpi-creditos").textContent = "S/ " + saldoTotal.toFixed(2);
     document.getElementById("kpi-creditos-cambio").innerHTML =
-      '<i class="bi bi-person-circle"></i> ' + creditos.length + " cliente(s)";
+      '<i class="bi bi-person-circle"></i> ' + creditosPendientes.length + " cliente(s)";
   } catch (err) {
     console.error("Error cargando KPIs:", err);
   }

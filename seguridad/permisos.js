@@ -1,15 +1,14 @@
-import { api } from "../login/login.js";
+import { api, tieneCsrf, yo } from "../login/login.js";
 
 const tabla = document.getElementById("tablaPermisos");
+const btnGuardar = document.querySelector("#pane-permisos .btn-primary");
 const encabezado = tabla.tHead.rows[0];
 const tbody = tabla.tBodies[0];
 
 function celda(tag, texto, clase) {
   const el = document.createElement(tag);
   el.textContent = texto;
-  if (clase) {
-    el.className = clase;
-  }
+  if (clase) el.className = clase;
   return el;
 }
 
@@ -25,10 +24,8 @@ function celdaPermiso(permiso) {
 function celdaSwitch(idRol, permiso) {
   const td = document.createElement("td");
   td.className = "text-center";
-
   const contenedor = document.createElement("div");
   contenedor.className = "form-check form-switch d-inline-flex";
-
   const input = document.createElement("input");
   input.className = "form-check-input";
   input.type = "checkbox";
@@ -36,7 +33,6 @@ function celdaSwitch(idRol, permiso) {
   input.checked = Boolean(permiso.concedidoPorRol[String(idRol)]);
   input.dataset.idRol = idRol;
   input.dataset.idPermiso = permiso.idPermiso;
-
   contenedor.appendChild(input);
   td.appendChild(contenedor);
   return td;
@@ -65,12 +61,10 @@ function filaMensaje(texto, columnas) {
 function pintar(matriz) {
   const roles = matriz.roles || [];
   const columnas = roles.length + 1;
-
   encabezado.replaceChildren(
     celda("th", "Permiso / Rol"),
     ...roles.map((rol) => celda("th", rol.nRol, "text-center")),
   );
-
   const filas = [];
   (matriz.modulos || []).forEach((modulo) => {
     filas.push(filaModulo(modulo, columnas));
@@ -83,7 +77,6 @@ function pintar(matriz) {
       filas.push(tr);
     });
   });
-
   tbody.replaceChildren(
     ...(filas.length ? filas : [filaMensaje("No hay permisos.", columnas)]),
   );
@@ -103,4 +96,28 @@ export async function cargarMatriz() {
   }
 }
 
+async function guardarMatriz() {
+  const cambios = [];
+  tbody.querySelectorAll("input[type='checkbox']").forEach((input) => {
+    cambios.push({
+      idRol: Number(input.dataset.idRol),
+      idPermiso: Number(input.dataset.idPermiso),
+      concedido: input.checked,
+    });
+  });
+  try {
+    if (!tieneCsrf()) await yo();
+    await api("PUT", "/api/permisos/matriz", { cambios });
+    alert("Permisos guardados correctamente.");
+    await cargarMatriz();
+  } catch (err) {
+    if (err.status === 401) {
+      window.location.href = "../login/login.html";
+      return;
+    }
+    alert(err.mensaje || "No se pudo guardar los permisos.");
+  }
+}
+
 cargarMatriz();
+if (btnGuardar) btnGuardar.addEventListener("click", guardarMatriz);

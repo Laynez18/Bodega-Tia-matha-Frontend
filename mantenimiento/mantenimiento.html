@@ -873,5 +873,15 @@
     <script src="../assets/pestanas.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>
+    <script type="module">
+      import { api, tieneCsrf, yo } from "../login/login.js";
+      function irALogin(err){ if(err&&err.status===401){window.location.href="../login/login.html";return true;} return false; }
+      document.querySelectorAll("[data-bs-target='#modalNuevoEmpleado']").forEach(b=>{
+        b.addEventListener("click",()=>{ bootstrap.Modal.getOrCreateInstance(document.getElementById("modalNuevoEmpleado")).show(); });
+      });
+      document.querySelectorAll("#pane-productos .btn-primary, #pane-clientes .btn-primary, #pane-proveedores .btn-primary, #pane-categorias .btn-primary").forEach(b=>{
+        b.addEventListener("click",()=>{ alert("Módulo de mantenimiento por implementar para esta sección."); });
+      });
+    </script>
   </body>
 </html>

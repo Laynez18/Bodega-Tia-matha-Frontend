@@ -190,42 +190,14 @@ document.addEventListener("DOMContentLoaded", () => {
   async function listarComprobantes() {
     if (!tbodyComprobantes) return;
     try {
-      const [bs, fs] = await Promise.all([
-        api("GET", "/api/boletas").catch(() => []),
-        api("GET", "/api/facturas").catch(() => [])
-      ]);
-      boletas = bs || [];
-      facturas = fs || [];
-      const todos = [];
-      boletas.forEach(b => todos.push({ ...b, tipo: "Boleta", fuente: "boleta" }));
-      facturas.forEach(f => todos.push({ ...f, tipo: "Factura", fuente: "factura" }));
-      todos.sort((a, b) => String(b.id || "").localeCompare(String(a.id || "")));
-
       tbodyComprobantes.innerHTML = "";
-      if (!todos.length) {
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = 8;
-        td.className = "text-center text-muted";
-        td.textContent = "No hay comprobantes emitidos.";
-        tr.appendChild(td);
-        tbodyComprobantes.appendChild(tr);
-        return;
-      }
-      todos.forEach(c => {
-        const venta = ventasDia.find(v => String(v.id) === String(c.idVenta));
-        const tr = document.createElement("tr");
-        tr.innerHTML =
-          "<td>" + (c.id || "") + "</td>" +
-          "<td>" + (c.serie || "") + "-" + (c.numero || "") + "</td>" +
-          "<td><span class='badge " + (c.tipo === "Boleta" ? "text-bg-info" : "text-bg-primary") + "'>" + c.tipo + "</span></td>" +
-          "<td>" + (c.fEmision || "") + "</td>" +
-          "<td>" + (venta ? (venta.nombreCliente || "") : "Venta #" + c.idVenta) + "</td>" +
-          "<td>" + (venta ? formatearMoneda(venta.total) : "") + "</td>" +
-          "<td><span class='badge " + (c.estado === "1" ? "text-bg-success" : "text-bg-secondary") + "'>" + (c.estado === "1" ? "Activo" : "Inactivo") + "</span></td>" +
-          "<td><button class='btn btn-sm btn-outline-primary' title='Ver' data-accion='ver' data-tipo='" + c.fuente + "' data-id='" + c.id + "'><i class='bi bi-eye'></i></button></td>";
-        tbodyComprobantes.appendChild(tr);
-      });
+      const tr = document.createElement("tr");
+      const td = document.createElement("td");
+      td.colSpan = 8;
+      td.className = "text-center text-muted";
+      td.textContent = "Los comprobantes se emiten al guardar una venta (Boleta/Factura).";
+      tr.appendChild(td);
+      tbodyComprobantes.appendChild(tr);
     } catch (err) {
       if (!irALogin(err)) {
         tbodyComprobantes.innerHTML = "<tr><td colspan='8' class='text-center text-danger'>Error: " + (err.mensaje || "No se pudo cargar.") + "</td></tr>";

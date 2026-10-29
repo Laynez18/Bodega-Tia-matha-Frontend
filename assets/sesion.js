@@ -1,4 +1,4 @@
-import { API_BASE } from "./config.js";
+import { logout } from "./login.js";
 
 const TIEMPO_INACTIVIDAD_MINUTOS = 15;
 const URL_LOGIN = "../login/login.html";
@@ -6,18 +6,16 @@ const URL_LOGIN = "../login/login.html";
 let temporizador = null;
 let eventos = ["mousemove", "keydown", "click", "scroll", "touchstart"];
 
-export function cerrarSesion() {
+export async function cerrarSesion() {
   clearTimeout(temporizador);
-  fetch(API_BASE + "/api/auth/logout", {
-    method: "POST",
-    credentials: "include",
-  })
-    .then(() => {})
-    .catch(() => {})
-    .finally(() => {
-      localStorage.removeItem("mm-usuario-recordado");
-      window.location.href = URL_LOGIN;
-    });
+  try {
+    await logout();
+  } catch (e) {
+    // ignorar error de red al cerrar sesión
+  } finally {
+    localStorage.removeItem("mm-usuario-recordado");
+    window.location.href = URL_LOGIN;
+  }
 }
 
 function resetearTemporizador() {
