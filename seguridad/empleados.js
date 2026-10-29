@@ -3,6 +3,7 @@ import { api, tieneCsrf, yo } from "../login/login.js";
 const modal = document.getElementById("modalNuevoEmpleado");
 const form = modal.querySelector("form");
 const btnGuardar = modal.querySelector(".modal-footer .btn-primary");
+const btnConstatarDni = document.getElementById("btnConstatarDni");
 const tbody = document.querySelector("#pane-empleados tbody");
 const titulo = document.getElementById("modalNuevoEmpleadoLabel");
 
@@ -272,5 +273,32 @@ tbody.addEventListener("click", (e) => {
     desactivarEmpleado(id);
   }
 });
+
+function convertirFecha(fecha) {
+  if (!fecha) return "";
+  const partes = fecha.split("/");
+  if (partes.length === 3) {
+    return partes[2] + "-" + partes[1] + "-" + partes[0];
+  }
+  return fecha;
+}
+
+async function constatarDni() {
+  const dni = document.getElementById("empleado-documento").value.trim();
+  if (!dni) { mostrarError("Ingrese un DNI para constatar."); return; }
+  try {
+    const data = await api("GET", "/api/personas/consultar-dni/" + encodeURIComponent(dni));
+    if (!data || !data.success || !data.datos) throw new Error(data && data.mensaje ? data.mensaje : "No se encontraron datos para ese DNI.");
+    const d = data.datos;
+    document.getElementById("empleado-nombre").value = d.nombre || "";
+    document.getElementById("empleado-ap-paterno").value = d.apellidoPaterno || "";
+    document.getElementById("empleado-ap-materno").value = d.apellidoMaterno || "";
+    limpiarError();
+  } catch (err) {
+    mostrarError(err.mensaje || "No se pudo constatar el DNI.");
+  }
+}
+
+btnConstatarDni.addEventListener("click", constatarDni);
 
 listarEmpleados();
