@@ -67,12 +67,21 @@
   function navegar(url) {
     var urlBase = obtenerUrlBase(url);
     if (!/\.html$/i.test(urlBase)) return;
-    if (urlBase === window.location.pathname + window.location.search) return;
 
     // Guardar scroll del sidebar antes de navegar
     var asideActual = document.querySelector('aside');
     if (asideActual) {
       sessionStorage.setItem('mmSidebarScroll', asideActual.scrollTop);
+    }
+
+    // Mismo archivo, solo cambió el hash (ej: pestañas dentro de seguridad.html)
+    if (urlBase === window.location.pathname + window.location.search) {
+      var ancla = obtenerAncla(url);
+      var anclaActual = obtenerAncla(window.location.href);
+      if (ancla && ancla !== anclaActual) {
+        window.location.hash = ancla;
+      }
+      return;
     }
 
     fetch(urlBase, { headers: { 'X-Requested-With': 'fetch' } })
