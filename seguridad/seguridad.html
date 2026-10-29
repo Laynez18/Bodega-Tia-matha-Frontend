@@ -26,7 +26,7 @@
     </script>
   </head>
   <body>
-    <div class="d-flex">
+    <div class="d-flex vh-100 overflow-hidden">
       <!-- ============ SIDEBAR ============ -->
       <div id="sidebar-contenedor"></div>
 
@@ -150,7 +150,7 @@
       </div>
 
       <!-- ============ CONTENIDO ============ -->
-      <main class="flex-grow-1 min-width-0 p-3 p-md-4">
+        <main class="flex-grow-1 min-width-0 d-flex flex-column overflow-hidden p-3 p-md-4">
         <!-- Barra superior para móvil -->
         <header
           class="d-md-none d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 border-bottom mb-3"
@@ -241,7 +241,7 @@
           </li>
         </ul>
 
-        <div class="tab-content border rounded shadow-sm bg-white p-3 mb-3" id="tabSeguridadContenido">
+        <div class="tab-content border rounded shadow-sm bg-white p-3 flex-grow-1 overflow-auto" id="tabSeguridadContenido">
           <!-- Usuarios -->
           <div
             class="tab-pane fade show active"
