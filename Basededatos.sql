@@ -1,807 +1,158 @@
--- WARNING: This schema is for context only and is not meant to be run.
--- Table order and constraints may not be valid for execution.
-
-CREATE TABLE public.departamento (
-  id_departamento bigint NOT NULL DEFAULT nextval('departamento_id_departamento_seq'::regclass),
-  n_departamento character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT departamento_pkey PRIMARY KEY (id_departamento)
-);
-CREATE TABLE public.provincia (
-  id_provincia bigint NOT NULL DEFAULT nextval('provincia_id_provincia_seq'::regclass),
-  id_departamento bigint NOT NULL,
-  n_provincia character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT provincia_pkey PRIMARY KEY (id_provincia),
-  CONSTRAINT fk_provincia_departamento FOREIGN KEY (id_departamento) REFERENCES public.departamento(id_departamento)
-);
-CREATE TABLE public.distrito (
-  id_distrito bigint NOT NULL DEFAULT nextval('distrito_id_distrito_seq'::regclass),
-  id_provincia bigint NOT NULL,
-  d_distrito character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT distrito_pkey PRIMARY KEY (id_distrito),
-  CONSTRAINT fk_distrito_provincia FOREIGN KEY (id_provincia) REFERENCES public.provincia(id_provincia)
-);
-CREATE TABLE public.tipo_identidad (
-  id_tipo_identidad bigint NOT NULL DEFAULT nextval('tipo_identidad_id_tipo_identidad_seq'::regclass),
-  n_tipo_identidad character varying NOT NULL,
-  abreviatura character varying,
-  longitud integer,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT tipo_identidad_pkey PRIMARY KEY (id_tipo_identidad)
-);
-CREATE TABLE public.persona (
-  id_persona bigint NOT NULL DEFAULT nextval('persona_id_persona_seq'::regclass),
-  id_distrito bigint,
-  id_tipo_identidad bigint NOT NULL,
-  n_documento character varying NOT NULL,
-  nombre character varying NOT NULL,
-  ap_paterno character varying,
-  ap_materno character varying,
-  f_nacimiento date,
-  email character varying,
-  celular character varying,
-  genero character varying CHECK ((genero::text = ANY (ARRAY['M'::character varying, 'F'::character varying, 'O'::character varying]::text[])) OR genero IS NULL),
-  direccion character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT persona_pkey PRIMARY KEY (id_persona),
-  CONSTRAINT fk_persona_distrito FOREIGN KEY (id_distrito) REFERENCES public.distrito(id_distrito),
-  CONSTRAINT fk_persona_tipo_identidad FOREIGN KEY (id_tipo_identidad) REFERENCES public.tipo_identidad(id_tipo_identidad)
-);
-CREATE TABLE public.empresa (
-  id_empresa bigint NOT NULL DEFAULT nextval('empresa_id_empresa_seq'::regclass),
-  ruc character varying NOT NULL,
-  razon_social character varying NOT NULL,
-  direccion character varying,
-  telefono character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT empresa_pkey PRIMARY KEY (id_empresa)
-);
-CREATE TABLE public.cargo (
-  id_cargo bigint NOT NULL DEFAULT nextval('cargo_id_cargo_seq'::regclass),
-  n_cargo character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT cargo_pkey PRIMARY KEY (id_cargo)
-);
-CREATE TABLE public.contrato (
-  id_contrato bigint NOT NULL DEFAULT nextval('contrato_id_contrato_seq'::regclass),
-  n_contrato character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT contrato_pkey PRIMARY KEY (id_contrato)
-);
-CREATE TABLE public.empleado (
-  id_empleado bigint NOT NULL DEFAULT nextval('empleado_id_empleado_seq'::regclass),
-  id_persona bigint NOT NULL,
-  id_contrato bigint,
-  id_cargo bigint,
-  salario numeric,
-  turno character varying,
-  fondo_pension character varying,
-  n_hps character varying,
-  essalud character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT empleado_pkey PRIMARY KEY (id_empleado),
-  CONSTRAINT fk_empleado_persona FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona),
-  CONSTRAINT fk_empleado_contrato FOREIGN KEY (id_contrato) REFERENCES public.contrato(id_contrato),
-  CONSTRAINT fk_empleado_cargo FOREIGN KEY (id_cargo) REFERENCES public.cargo(id_cargo)
-);
-CREATE TABLE public.tipo_usuario (
-  id_tipo_usuario bigint NOT NULL DEFAULT nextval('tipo_usuario_id_tipo_usuario_seq'::regclass),
-  n_tipo_usuario character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT tipo_usuario_pkey PRIMARY KEY (id_tipo_usuario)
-);
-CREATE TABLE public.usuario (
-  id_usuario bigint NOT NULL DEFAULT nextval('usuario_id_usuario_seq'::regclass),
-  id_tipo_usuario bigint NOT NULL,
-  id_empleado bigint,
-  logeo character varying NOT NULL UNIQUE,
-  clave character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT usuario_pkey PRIMARY KEY (id_usuario),
-  CONSTRAINT fk_usuario_tipo_usuario FOREIGN KEY (id_tipo_usuario) REFERENCES public.tipo_usuario(id_tipo_usuario),
-  CONSTRAINT fk_usuario_empleado FOREIGN KEY (id_empleado) REFERENCES public.empleado(id_empleado)
-);
-CREATE TABLE public.modulo (
-  id_modulo bigint NOT NULL DEFAULT nextval('modulo_id_modulo_seq'::regclass),
-  n_modulo character varying NOT NULL,
-  descripcion character varying,
-  icono character varying,
-  orden integer,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT modulo_pkey PRIMARY KEY (id_modulo)
-);
-CREATE TABLE public.rol (
-  id_rol bigint NOT NULL DEFAULT nextval('rol_id_rol_seq'::regclass),
-  n_rol character varying NOT NULL UNIQUE,
-  descripcion character varying,
-  nivel integer,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT rol_pkey PRIMARY KEY (id_rol)
-);
-CREATE TABLE public.permiso (
-  id_permiso bigint NOT NULL DEFAULT nextval('permiso_id_permiso_seq'::regclass),
-  id_modulo bigint NOT NULL,
-  n_permiso character varying NOT NULL,
-  clave character varying NOT NULL UNIQUE,
-  descripcion character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT permiso_pkey PRIMARY KEY (id_permiso),
-  CONSTRAINT fk_permiso_modulo FOREIGN KEY (id_modulo) REFERENCES public.modulo(id_modulo)
-);
-CREATE TABLE public.rol_permiso (
-  id_rol_permiso bigint NOT NULL DEFAULT nextval('rol_permiso_id_rol_permiso_seq'::regclass),
-  id_rol bigint NOT NULL,
-  id_permiso bigint NOT NULL,
-  concedido character varying NOT NULL DEFAULT '1'::character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT rol_permiso_pkey PRIMARY KEY (id_rol_permiso),
-  CONSTRAINT fk_rol_permiso_rol FOREIGN KEY (id_rol) REFERENCES public.rol(id_rol),
-  CONSTRAINT fk_rol_permiso_permiso FOREIGN KEY (id_permiso) REFERENCES public.permiso(id_permiso)
-);
-CREATE TABLE public.usuario_rol (
-  id_usuario_rol bigint NOT NULL DEFAULT nextval('usuario_rol_id_usuario_rol_seq'::regclass),
-  id_usuario bigint NOT NULL,
-  id_rol bigint NOT NULL,
-  f_asignacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  vigente character varying NOT NULL DEFAULT '1'::character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT usuario_rol_pkey PRIMARY KEY (id_usuario_rol),
-  CONSTRAINT fk_usuario_rol_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_usuario_rol_rol FOREIGN KEY (id_rol) REFERENCES public.rol(id_rol)
-);
-CREATE TABLE public.auditoria (
-  id_auditoria bigint NOT NULL DEFAULT nextval('auditoria_id_auditoria_seq'::regclass),
-  id_usuario bigint,
-  n_tabla character varying NOT NULL,
-  accion character varying NOT NULL,
-  id_registro bigint,
-  valor_anterior character varying,
-  valor_nuevo character varying,
-  f_evento timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  ip character varying,
-  terminal character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT auditoria_pkey PRIMARY KEY (id_auditoria),
-  CONSTRAINT fk_auditoria_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario)
-);
-CREATE TABLE public.caja (
-  id_caja bigint NOT NULL DEFAULT nextval('caja_id_caja_seq'::regclass),
-  n_caja character varying NOT NULL,
-  descripcion character varying,
-  ubicacion character varying,
-  serie_terminal character varying,
-  moneda character varying NOT NULL DEFAULT 'PEN'::character varying,
-  monto_base numeric DEFAULT 0,
-  aperturada character varying NOT NULL DEFAULT '0'::character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT caja_pkey PRIMARY KEY (id_caja)
-);
-CREATE TABLE public.apertura_caja (
-  id_apertura_caja bigint NOT NULL DEFAULT nextval('apertura_caja_id_apertura_caja_seq'::regclass),
-  id_caja bigint NOT NULL,
-  id_usuario bigint NOT NULL,
-  id_usuario_cierre bigint,
-  numero_turno character varying,
-  f_apertura timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  f_cierre timestamp without time zone,
-  monto_inicial numeric NOT NULL DEFAULT 0,
-  total_ingresos numeric DEFAULT 0,
-  total_egresos numeric DEFAULT 0,
-  monto_sistema numeric DEFAULT 0,
-  monto_declarado numeric DEFAULT 0,
-  diferencia numeric DEFAULT 0,
-  situacion character varying NOT NULL DEFAULT 'A'::character varying,
-  observacion character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT apertura_caja_pkey PRIMARY KEY (id_apertura_caja),
-  CONSTRAINT fk_apertura_caja_caja FOREIGN KEY (id_caja) REFERENCES public.caja(id_caja),
-  CONSTRAINT fk_apertura_caja_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_apertura_caja_usuario_cierre FOREIGN KEY (id_usuario_cierre) REFERENCES public.usuario(id_usuario)
-);
-CREATE TABLE public.tipo_movimiento_caja (
-  id_tipo_movimiento bigint NOT NULL DEFAULT nextval('tipo_movimiento_caja_id_tipo_movimiento_seq'::regclass),
-  n_tipo_movimiento character varying NOT NULL,
-  abreviatura character varying,
-  signo character varying NOT NULL CHECK (signo::text = ANY (ARRAY['+'::character varying, '-'::character varying]::text[])),
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT tipo_movimiento_caja_pkey PRIMARY KEY (id_tipo_movimiento)
-);
-CREATE TABLE public.concepto_caja (
-  id_concepto bigint NOT NULL DEFAULT nextval('concepto_caja_id_concepto_seq'::regclass),
-  id_tipo_movimiento bigint NOT NULL,
-  n_concepto character varying NOT NULL,
-  descripcion character varying,
-  afecta_efectivo character varying NOT NULL DEFAULT '1'::character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT concepto_caja_pkey PRIMARY KEY (id_concepto),
-  CONSTRAINT fk_concepto_caja_tipo_movimiento FOREIGN KEY (id_tipo_movimiento) REFERENCES public.tipo_movimiento_caja(id_tipo_movimiento)
-);
-CREATE TABLE public.almacen (
-  id_almacen bigint NOT NULL DEFAULT nextval('almacen_id_almacen_seq'::regclass),
-  n_almacen character varying NOT NULL,
-  descripcion character varying,
-  ubicacion character varying,
-  es_principal character varying NOT NULL DEFAULT '0'::character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT almacen_pkey PRIMARY KEY (id_almacen)
-);
-CREATE TABLE public.unidad_medida (
-  id_unidad_medida bigint NOT NULL DEFAULT nextval('unidad_medida_id_unidad_medida_seq'::regclass),
-  n_unidad_medida character varying NOT NULL,
-  abreviatura character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT unidad_medida_pkey PRIMARY KEY (id_unidad_medida)
-);
-CREATE TABLE public.marca (
-  id_marca bigint NOT NULL DEFAULT nextval('marca_id_marca_seq'::regclass),
-  n_marca character varying NOT NULL,
-  descripcion character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT marca_pkey PRIMARY KEY (id_marca)
-);
-CREATE TABLE public.categoria_producto (
-  id_categoria_producto bigint NOT NULL DEFAULT nextval('categoria_producto_id_categoria_producto_seq'::regclass),
-  n_categoria_producto character varying NOT NULL,
-  descripcion character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT categoria_producto_pkey PRIMARY KEY (id_categoria_producto)
-);
-CREATE TABLE public.producto (
-  id_producto bigint NOT NULL DEFAULT nextval('producto_id_producto_seq'::regclass),
-  id_categoria_producto bigint NOT NULL,
-  id_marca bigint,
-  codigo_barras character varying,
-  n_producto character varying NOT NULL,
-  detalle character varying,
-  p_compra numeric NOT NULL DEFAULT 0,
-  p_venta numeric NOT NULL DEFAULT 0,
-  p_mayoreo numeric DEFAULT 0,
-  stock_actual numeric NOT NULL DEFAULT 0,
-  stock_minimo numeric NOT NULL DEFAULT 0,
-  stock_maximo numeric DEFAULT 0,
-  afecto_igv character varying NOT NULL DEFAULT '1'::character varying,
-  es_perecible character varying NOT NULL DEFAULT '0'::character varying,
-  imagen character varying,
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT producto_pkey PRIMARY KEY (id_producto),
-  CONSTRAINT fk_producto_categoria_producto FOREIGN KEY (id_categoria_producto) REFERENCES public.categoria_producto(id_categoria_producto),
-  CONSTRAINT fk_producto_marca FOREIGN KEY (id_marca) REFERENCES public.marca(id_marca)
-);
-CREATE TABLE public.presentacion_producto (
-  id_presentacion_producto bigint NOT NULL DEFAULT nextval('presentacion_producto_id_presentacion_producto_seq'::regclass),
-  id_producto bigint NOT NULL,
-  id_unidad_medida bigint NOT NULL,
-  factor_conversion numeric NOT NULL DEFAULT 1 CHECK (factor_conversion > 0::numeric),
-  es_unidad_base character varying NOT NULL DEFAULT '0'::character varying CHECK (es_unidad_base::text = ANY (ARRAY['0'::character varying, '1'::character varying]::text[])),
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT presentacion_producto_pkey PRIMARY KEY (id_presentacion_producto),
-  CONSTRAINT fk_presentacion_producto_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_presentacion_producto_unidad_medida FOREIGN KEY (id_unidad_medida) REFERENCES public.unidad_medida(id_unidad_medida)
-);
-CREATE TABLE public.inventario (
-  id_inventario bigint NOT NULL DEFAULT nextval('inventario_id_inventario_seq'::regclass),
-  id_producto bigint NOT NULL,
-  id_almacen bigint NOT NULL,
-  stock numeric NOT NULL DEFAULT 0,
-  stock_reservado numeric NOT NULL DEFAULT 0,
-  ubicacion_fisica character varying,
-  f_actualizacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT inventario_pkey PRIMARY KEY (id_inventario),
-  CONSTRAINT fk_inventario_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_inventario_almacen FOREIGN KEY (id_almacen) REFERENCES public.almacen(id_almacen)
-);
-CREATE TABLE public.lote_producto (
-  id_lote bigint NOT NULL DEFAULT nextval('lote_producto_id_lote_seq'::regclass),
-  id_producto bigint NOT NULL,
-  id_almacen bigint NOT NULL,
-  n_lote character varying,
-  f_produccion date,
-  f_vencimiento date,
-  cantidad_inicial numeric NOT NULL DEFAULT 0,
-  cantidad_actual numeric NOT NULL DEFAULT 0,
-  costo_unitario numeric DEFAULT 0,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT lote_producto_pkey PRIMARY KEY (id_lote),
-  CONSTRAINT fk_lote_producto_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_lote_producto_almacen FOREIGN KEY (id_almacen) REFERENCES public.almacen(id_almacen)
-);
-CREATE TABLE public.tipo_movimiento_inv (
-  id_tipo_movimiento_inv bigint NOT NULL DEFAULT nextval('tipo_movimiento_inv_id_tipo_movimiento_inv_seq'::regclass),
-  n_tipo_movimiento character varying NOT NULL,
-  abreviatura character varying,
-  signo character varying NOT NULL CHECK (signo::text = ANY (ARRAY['+'::character varying, '-'::character varying]::text[])),
-  f_creacion timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT tipo_movimiento_inv_pkey PRIMARY KEY (id_tipo_movimiento_inv)
-);
-CREATE TABLE public.metodo_pago (
-  id_metodo_pago bigint NOT NULL DEFAULT nextval('metodo_pago_id_metodo_pago_seq'::regclass),
-  n_metodo_pago character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT metodo_pago_pkey PRIMARY KEY (id_metodo_pago)
-);
-CREATE TABLE public.cliente (
-  id_cliente bigint NOT NULL DEFAULT nextval('cliente_id_cliente_seq'::regclass),
-  id_persona bigint,
-  id_empresa bigint,
-  codigo_cliente character varying,
-  tipo_cliente character varying NOT NULL DEFAULT 'N'::character varying CHECK (tipo_cliente::text = ANY (ARRAY['N'::character varying, 'J'::character varying]::text[])),
-  limite_credito numeric NOT NULL DEFAULT 0,
-  saldo_deuda numeric NOT NULL DEFAULT 0,
-  puntos integer NOT NULL DEFAULT 0,
-  f_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT cliente_pkey PRIMARY KEY (id_cliente),
-  CONSTRAINT fk_cliente_persona FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona),
-  CONSTRAINT fk_cliente_empresa FOREIGN KEY (id_empresa) REFERENCES public.empresa(id_empresa)
-);
-CREATE TABLE public.proveedor (
-  id_proveedor bigint NOT NULL DEFAULT nextval('proveedor_id_proveedor_seq'::regclass),
-  id_empresa bigint,
-  id_persona bigint,
-  codigo_proveedor character varying,
-  contacto character varying,
-  telefono_contacto character varying,
-  email_contacto character varying,
-  dias_credito integer NOT NULL DEFAULT 0,
-  f_registro timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT proveedor_pkey PRIMARY KEY (id_proveedor),
-  CONSTRAINT fk_proveedor_empresa FOREIGN KEY (id_empresa) REFERENCES public.empresa(id_empresa),
-  CONSTRAINT fk_proveedor_persona FOREIGN KEY (id_persona) REFERENCES public.persona(id_persona)
-);
-CREATE TABLE public.compra (
-  id_compra bigint NOT NULL DEFAULT nextval('compra_id_compra_seq'::regclass),
-  id_proveedor bigint NOT NULL,
-  id_usuario bigint NOT NULL,
-  id_almacen bigint NOT NULL,
-  id_metodo_pago bigint,
-  tipo_documento character varying,
-  documento character varying,
-  f_compra timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  sub_total numeric NOT NULL DEFAULT 0,
-  igv numeric NOT NULL DEFAULT 0,
-  total numeric NOT NULL DEFAULT 0,
-  t_pagado numeric NOT NULL DEFAULT 0,
-  saldo numeric NOT NULL DEFAULT 0,
-  es_credito character varying NOT NULL DEFAULT '0'::character varying,
-  f_vencimiento date,
-  situacion character varying NOT NULL DEFAULT 'R'::character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT compra_pkey PRIMARY KEY (id_compra),
-  CONSTRAINT fk_compra_proveedor FOREIGN KEY (id_proveedor) REFERENCES public.proveedor(id_proveedor),
-  CONSTRAINT fk_compra_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_compra_almacen FOREIGN KEY (id_almacen) REFERENCES public.almacen(id_almacen),
-  CONSTRAINT fk_compra_metodo_pago FOREIGN KEY (id_metodo_pago) REFERENCES public.metodo_pago(id_metodo_pago)
-);
-CREATE TABLE public.detalle_compra (
-  id_detalle_compra bigint NOT NULL DEFAULT nextval('detalle_compra_id_detalle_compra_seq'::regclass),
-  id_compra bigint NOT NULL,
-  id_producto bigint NOT NULL,
-  id_presentacion_producto bigint NOT NULL,
-  id_lote bigint,
-  cantidad numeric NOT NULL CHECK (cantidad > 0::numeric),
-  costo_unitario numeric NOT NULL,
-  sub_total numeric NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT detalle_compra_pkey PRIMARY KEY (id_detalle_compra),
-  CONSTRAINT fk_detalle_compra_compra FOREIGN KEY (id_compra) REFERENCES public.compra(id_compra),
-  CONSTRAINT fk_detalle_compra_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_detalle_compra_presentacion_producto FOREIGN KEY (id_presentacion_producto) REFERENCES public.presentacion_producto(id_presentacion_producto),
-  CONSTRAINT fk_detalle_compra_lote FOREIGN KEY (id_lote) REFERENCES public.lote_producto(id_lote)
-);
-CREATE TABLE public.venta (
-  id_venta bigint NOT NULL DEFAULT nextval('venta_id_venta_seq'::regclass),
-  id_cliente bigint NOT NULL,
-  id_usuario bigint NOT NULL,
-  id_apertura_caja bigint,
-  id_metodo_pago bigint NOT NULL,
-  f_venta timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  sub_total numeric NOT NULL DEFAULT 0,
-  igv numeric NOT NULL DEFAULT 0,
-  descuento numeric NOT NULL DEFAULT 0,
-  total numeric NOT NULL DEFAULT 0,
-  t_pagado numeric NOT NULL DEFAULT 0,
-  vuelto numeric NOT NULL DEFAULT 0,
-  es_credito character varying NOT NULL DEFAULT '0'::character varying,
-  saldo numeric NOT NULL DEFAULT 0,
-  tipo_documento character varying NOT NULL DEFAULT 'TICKET'::character varying,
-  situacion character varying NOT NULL DEFAULT 'R'::character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT venta_pkey PRIMARY KEY (id_venta),
-  CONSTRAINT fk_venta_apertura_caja FOREIGN KEY (id_apertura_caja) REFERENCES public.apertura_caja(id_apertura_caja),
-  CONSTRAINT fk_venta_metodo_pago FOREIGN KEY (id_metodo_pago) REFERENCES public.metodo_pago(id_metodo_pago),
-  CONSTRAINT fk_venta_cliente FOREIGN KEY (id_cliente) REFERENCES public.cliente(id_cliente),
-  CONSTRAINT fk_venta_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario)
-);
-CREATE TABLE public.detalle_venta (
-  id_detalle bigint NOT NULL DEFAULT nextval('detalle_venta_id_detalle_seq'::regclass),
-  id_venta bigint NOT NULL,
-  id_producto bigint NOT NULL,
-  id_presentacion_producto bigint NOT NULL,
-  cantidad numeric NOT NULL CHECK (cantidad > 0::numeric),
-  precio_unitario numeric NOT NULL,
-  descuento numeric NOT NULL DEFAULT 0,
-  sub_total numeric NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT detalle_venta_pkey PRIMARY KEY (id_detalle),
-  CONSTRAINT fk_detalle_venta_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta),
-  CONSTRAINT fk_detalle_venta_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_detalle_venta_presentacion_producto FOREIGN KEY (id_presentacion_producto) REFERENCES public.presentacion_producto(id_presentacion_producto)
-);
-CREATE TABLE public.boleta (
-  id_boleta bigint NOT NULL DEFAULT nextval('boleta_id_boleta_seq'::regclass),
-  id_venta bigint NOT NULL,
-  f_emision timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  numero character varying NOT NULL,
-  serie character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT boleta_pkey PRIMARY KEY (id_boleta),
-  CONSTRAINT fk_boleta_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta)
-);
-CREATE TABLE public.factura (
-  id_factura bigint NOT NULL DEFAULT nextval('factura_id_factura_seq'::regclass),
-  id_venta bigint NOT NULL,
-  f_emision timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  numero character varying NOT NULL,
-  serie character varying NOT NULL,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT factura_pkey PRIMARY KEY (id_factura),
-  CONSTRAINT fk_factura_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta)
-);
-CREATE TABLE public.cuenta_cobrar (
-  id_cuenta bigint NOT NULL DEFAULT nextval('cuenta_cobrar_id_cuenta_seq'::regclass),
-  id_venta bigint NOT NULL,
-  id_cliente bigint NOT NULL,
-  monto_total numeric NOT NULL,
-  saldo numeric NOT NULL,
-  f_emision timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  f_vencimiento date,
-  situacion character varying NOT NULL DEFAULT 'P'::character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT cuenta_cobrar_pkey PRIMARY KEY (id_cuenta),
-  CONSTRAINT fk_cuenta_cobrar_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta),
-  CONSTRAINT fk_cuenta_cobrar_cliente FOREIGN KEY (id_cliente) REFERENCES public.cliente(id_cliente)
-);
-CREATE TABLE public.pago_cuenta (
-  id_pago_cuenta bigint NOT NULL DEFAULT nextval('pago_cuenta_id_pago_cuenta_seq'::regclass),
-  id_cuenta bigint NOT NULL,
-  id_metodo_pago bigint NOT NULL,
-  id_usuario bigint NOT NULL,
-  id_apertura_caja bigint,
-  monto numeric NOT NULL CHECK (monto > 0::numeric),
-  f_pago timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  documento character varying,
-  observacion character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT pago_cuenta_pkey PRIMARY KEY (id_pago_cuenta),
-  CONSTRAINT fk_pago_cuenta_cuenta FOREIGN KEY (id_cuenta) REFERENCES public.cuenta_cobrar(id_cuenta),
-  CONSTRAINT fk_pago_cuenta_metodo_pago FOREIGN KEY (id_metodo_pago) REFERENCES public.metodo_pago(id_metodo_pago),
-  CONSTRAINT fk_pago_cuenta_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_pago_cuenta_apertura_caja FOREIGN KEY (id_apertura_caja) REFERENCES public.apertura_caja(id_apertura_caja)
-);
-CREATE TABLE public.movimiento_inventario (
-  id_movimiento_inv bigint NOT NULL DEFAULT nextval('movimiento_inventario_id_movimiento_inv_seq'::regclass),
-  id_producto bigint NOT NULL,
-  id_almacen bigint NOT NULL,
-  id_tipo_movimiento_inv bigint NOT NULL,
-  id_lote bigint,
-  id_usuario bigint NOT NULL,
-  id_venta bigint,
-  id_compra bigint,
-  cantidad numeric NOT NULL,
-  costo_unitario numeric DEFAULT 0,
-  stock_anterior numeric NOT NULL DEFAULT 0,
-  stock_nuevo numeric NOT NULL DEFAULT 0,
-  f_movimiento timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  documento character varying,
-  observacion character varying,
-  ip character varying,
-  terminal character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT movimiento_inventario_pkey PRIMARY KEY (id_movimiento_inv),
-  CONSTRAINT fk_movimiento_inventario_producto FOREIGN KEY (id_producto) REFERENCES public.producto(id_producto),
-  CONSTRAINT fk_movimiento_inventario_almacen FOREIGN KEY (id_almacen) REFERENCES public.almacen(id_almacen),
-  CONSTRAINT fk_movimiento_inventario_tipo_movimiento_inv FOREIGN KEY (id_tipo_movimiento_inv) REFERENCES public.tipo_movimiento_inv(id_tipo_movimiento_inv),
-  CONSTRAINT fk_movimiento_inventario_lote FOREIGN KEY (id_lote) REFERENCES public.lote_producto(id_lote),
-  CONSTRAINT fk_movimiento_inventario_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_movimiento_inventario_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta),
-  CONSTRAINT fk_movimiento_inventario_compra FOREIGN KEY (id_compra) REFERENCES public.compra(id_compra)
-);
-CREATE TABLE public.movimiento_caja (
-  id_movimiento_caja bigint NOT NULL DEFAULT nextval('movimiento_caja_id_movimiento_caja_seq'::regclass),
-  id_apertura_caja bigint NOT NULL,
-  id_tipo_movimiento bigint NOT NULL,
-  id_concepto bigint NOT NULL,
-  id_metodo_pago bigint NOT NULL,
-  id_usuario bigint NOT NULL,
-  id_compra bigint,
-  id_venta bigint,
-  numero_operacion character varying,
-  documento character varying,
-  descripcion character varying,
-  monto numeric NOT NULL,
-  afecta_efectivo character varying NOT NULL DEFAULT '1'::character varying,
-  f_movimiento timestamp without time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  ip character varying,
-  terminal character varying,
-  usu_cre character varying,
-  pc_cre character varying,
-  fec_cre timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-  usu_mod character varying,
-  pc_mod character varying,
-  fec_mod timestamp without time zone,
-  estado character varying NOT NULL DEFAULT '1'::character varying,
-  CONSTRAINT movimiento_caja_pkey PRIMARY KEY (id_movimiento_caja),
-  CONSTRAINT fk_movimiento_caja_concepto FOREIGN KEY (id_concepto) REFERENCES public.concepto_caja(id_concepto),
-  CONSTRAINT fk_movimiento_caja_metodo_pago FOREIGN KEY (id_metodo_pago) REFERENCES public.metodo_pago(id_metodo_pago),
-  CONSTRAINT fk_movimiento_caja_usuario FOREIGN KEY (id_usuario) REFERENCES public.usuario(id_usuario),
-  CONSTRAINT fk_movimiento_caja_apertura_caja FOREIGN KEY (id_apertura_caja) REFERENCES public.apertura_caja(id_apertura_caja),
-  CONSTRAINT fk_movimiento_caja_tipo_movimiento FOREIGN KEY (id_tipo_movimiento) REFERENCES public.tipo_movimiento_caja(id_tipo_movimiento),
-  CONSTRAINT fk_movimiento_caja_compra FOREIGN KEY (id_compra) REFERENCES public.compra(id_compra),
-  CONSTRAINT fk_movimiento_caja_venta FOREIGN KEY (id_venta) REFERENCES public.venta(id_venta)
-);
+[
+  {
+    "create_table_sql": "CREATE TABLE public.almacen (\n    id_almacen bigint NOT NULL,\n    n_almacen character varying(50) NOT NULL,\n    descripcion character varying(100),\n    ubicacion character varying(100),\n    es_principal character varying(1) NOT NULL,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.apertura_caja (\n    id_apertura_caja bigint NOT NULL,\n    id_caja bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_usuario_cierre bigint,\n    numero_turno character varying(20),\n    f_apertura timestamp without time zone NOT NULL,\n    f_cierre timestamp without time zone,\n    monto_inicial numeric(12,2) NOT NULL,\n    total_ingresos numeric(12,2),\n    total_egresos numeric(12,2),\n    monto_sistema numeric(12,2),\n    monto_declarado numeric(12,2),\n    diferencia numeric(12,2),\n    situacion character varying(1) NOT NULL,\n    observacion character varying(200),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.auditoria (\n    id_auditoria bigint NOT NULL,\n    id_usuario bigint,\n    n_tabla character varying(50) NOT NULL,\n    accion character varying(20) NOT NULL,\n    id_registro bigint,\n    valor_anterior character varying(500),\n    valor_nuevo character varying(500),\n    f_evento timestamp without time zone,\n    ip character varying(20),\n    terminal character varying(30),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.boleta (\n    id_boleta bigint NOT NULL,\n    id_venta bigint NOT NULL,\n    f_emision timestamp without time zone NOT NULL,\n    numero character varying(8) NOT NULL,\n    serie character varying(5) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.caja (\n    id_caja bigint NOT NULL,\n    n_caja character varying(50) NOT NULL,\n    descripcion character varying(100),\n    ubicacion character varying(100),\n    serie_terminal character varying(30),\n    moneda character varying(3) NOT NULL,\n    monto_base numeric(12,2),\n    aperturada character varying(1) NOT NULL,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.cargo (\n    id_cargo bigint NOT NULL,\n    n_cargo character varying(40) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.categoria_producto (\n    id_categoria_producto bigint NOT NULL,\n    n_categoria_producto character varying(50) NOT NULL,\n    descripcion character varying(100),\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.cliente (\n    id_cliente bigint NOT NULL,\n    id_persona bigint,\n    id_empresa bigint,\n    codigo_cliente character varying(20),\n    tipo_cliente character varying(1) NOT NULL,\n    limite_credito numeric(12,2) NOT NULL,\n    saldo_deuda numeric(12,2) NOT NULL,\n    puntos integer NOT NULL,\n    f_registro timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL,\n    observacion character varying(200)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.compra (\n    id_compra bigint NOT NULL,\n    id_proveedor bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_almacen bigint NOT NULL,\n    id_metodo_pago bigint,\n    tipo_documento character varying(11),\n    documento character varying(50),\n    f_compra timestamp without time zone NOT NULL,\n    sub_total numeric(12,2) NOT NULL,\n    igv numeric(12,2) NOT NULL,\n    total numeric(12,2) NOT NULL,\n    t_pagado numeric(12,2) NOT NULL,\n    saldo numeric(12,2) NOT NULL,\n    es_credito character varying(1) NOT NULL,\n    f_vencimiento date,\n    situacion character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL,\n    numero_documento character varying(30),\n    observacion character varying(200)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.concepto_caja (\n    id_concepto bigint NOT NULL,\n    id_tipo_movimiento bigint NOT NULL,\n    n_concepto character varying(60) NOT NULL,\n    descripcion character varying(150),\n    afecta_efectivo character varying(1) NOT NULL,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.contrato (\n    id_contrato bigint NOT NULL,\n    n_contrato character varying(40) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.credito (\n    id_credito bigint NOT NULL,\n    estado character varying(1) NOT NULL,\n    fec_cre timestamp without time zone,\n    fec_mod timestamp without time zone,\n    pc_cre character varying(30),\n    pc_mod character varying(30),\n    usu_cre character varying(30),\n    usu_mod character varying(30),\n    f_emision timestamp without time zone NOT NULL,\n    f_vencimiento timestamp without time zone,\n    monto numeric(12,2) NOT NULL,\n    numero_documento character varying(30),\n    observacion character varying(200),\n    saldo numeric(12,2) NOT NULL,\n    id_cliente bigint NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.cuenta_cobrar (\n    id_cuenta bigint NOT NULL,\n    id_venta bigint NOT NULL,\n    id_cliente bigint NOT NULL,\n    monto_total numeric(12,2) NOT NULL,\n    saldo numeric(12,2) NOT NULL,\n    f_emision timestamp without time zone NOT NULL,\n    f_vencimiento date,\n    situacion character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.departamento (\n    id_departamento bigint NOT NULL,\n    n_departamento character varying(30) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.detalle_compra (\n    id_detalle_compra bigint NOT NULL,\n    id_compra bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_presentacion_producto bigint NOT NULL,\n    id_lote bigint,\n    cantidad integer NOT NULL,\n    costo_unitario numeric(10,2) NOT NULL,\n    sub_total numeric(12,2) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.detalle_venta (\n    id_detalle bigint NOT NULL,\n    id_venta bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_presentacion_producto bigint NOT NULL,\n    cantidad numeric(12,3) NOT NULL,\n    precio_unitario numeric(10,2) NOT NULL,\n    descuento numeric(10,2) NOT NULL,\n    sub_total numeric(12,2) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL,\n    id_detalle_venta bigint NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.distrito (\n    id_distrito bigint NOT NULL,\n    id_provincia bigint NOT NULL,\n    d_distrito character varying(40) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.empleado (\n    id_empleado bigint NOT NULL,\n    id_persona bigint NOT NULL,\n    id_contrato bigint,\n    id_cargo bigint,\n    salario numeric(8,2),\n    turno character varying(18),\n    fondo_pension character varying(3),\n    n_hps character varying(11),\n    essalud character varying(6),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.empresa (\n    id_empresa bigint NOT NULL,\n    ruc character varying(11) NOT NULL,\n    razon_social character varying(140) NOT NULL,\n    direccion character varying(150),\n    telefono character varying(8),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.factura (\n    id_factura bigint NOT NULL,\n    id_venta bigint NOT NULL,\n    f_emision timestamp without time zone NOT NULL,\n    numero character varying(8) NOT NULL,\n    serie character varying(5) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.inventario (\n    id_inventario bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_almacen bigint NOT NULL,\n    stock numeric(12,3) NOT NULL,\n    stock_reservado numeric(12,3) NOT NULL,\n    ubicacion_fisica character varying(50),\n    f_actualizacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.lote_producto (\n    id_lote bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_almacen bigint NOT NULL,\n    n_lote character varying(30),\n    f_produccion date,\n    f_vencimiento date,\n    cantidad_inicial numeric(12,3) NOT NULL,\n    cantidad_actual numeric(12,3) NOT NULL,\n    costo_unitario numeric(10,2),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.marca (\n    id_marca bigint NOT NULL,\n    n_marca character varying(50) NOT NULL,\n    descripcion character varying(100),\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.metodo_pago (\n    id_metodo_pago bigint NOT NULL,\n    n_metodo_pago character varying(30) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.modulo (\n    id_modulo bigint NOT NULL,\n    n_modulo character varying(50) NOT NULL,\n    descripcion character varying(100),\n    icono character varying(50),\n    orden integer,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.movimiento_caja (\n    id_movimiento_caja bigint NOT NULL,\n    id_apertura_caja bigint NOT NULL,\n    id_tipo_movimiento bigint NOT NULL,\n    id_concepto bigint NOT NULL,\n    id_metodo_pago bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_compra bigint,\n    id_venta bigint,\n    numero_operacion character varying(30),\n    documento character varying(50),\n    descripcion character varying(200),\n    monto numeric(12,2) NOT NULL,\n    afecta_efectivo character varying(1) NOT NULL,\n    f_movimiento timestamp without time zone NOT NULL,\n    ip character varying(20),\n    terminal character varying(30),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.movimiento_inventario (\n    id_movimiento_inv bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_almacen bigint NOT NULL,\n    id_tipo_movimiento_inv bigint NOT NULL,\n    id_lote bigint,\n    id_usuario bigint NOT NULL,\n    id_venta bigint,\n    id_compra bigint,\n    cantidad numeric(12,3) NOT NULL,\n    costo_unitario numeric(10,2),\n    stock_anterior numeric(12,3) NOT NULL,\n    stock_nuevo numeric(12,3) NOT NULL,\n    f_movimiento timestamp without time zone NOT NULL,\n    documento character varying(30),\n    observacion character varying(200),\n    ip character varying(20),\n    terminal character varying(30),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.pago_cuenta (\n    id_pago_cuenta bigint NOT NULL,\n    id_cuenta bigint NOT NULL,\n    id_metodo_pago bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_apertura_caja bigint,\n    monto numeric(12,2) NOT NULL,\n    f_pago timestamp without time zone NOT NULL,\n    documento character varying(50),\n    observacion character varying(200),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.permiso (\n    id_permiso bigint NOT NULL,\n    id_modulo bigint NOT NULL,\n    n_permiso character varying(50) NOT NULL,\n    clave character varying(50) NOT NULL,\n    descripcion character varying(100),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.persona (\n    id_persona bigint NOT NULL,\n    id_distrito bigint,\n    id_tipo_identidad bigint NOT NULL,\n    n_documento character varying(15) NOT NULL,\n    nombre character varying(80) NOT NULL,\n    ap_paterno character varying(80),\n    ap_materno character varying(80),\n    f_nacimiento date,\n    email character varying(50),\n    celular character varying(9),\n    genero character varying(1),\n    direccion character varying(100),\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.presentacion_producto (\n    id_presentacion_producto bigint NOT NULL,\n    id_producto bigint NOT NULL,\n    id_unidad_medida bigint NOT NULL,\n    factor_conversion numeric(12,3) NOT NULL,\n    es_unidad_base character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.producto (\n    id_producto bigint NOT NULL,\n    id_categoria_producto bigint NOT NULL,\n    id_marca bigint,\n    codigo_barras character varying(30),\n    n_producto character varying(50) NOT NULL,\n    detalle character varying(100),\n    p_compra numeric(10,2) NOT NULL,\n    p_venta numeric(10,2) NOT NULL,\n    p_mayoreo numeric(10,2),\n    stock_actual numeric(12,3) NOT NULL,\n    stock_minimo numeric(12,3) NOT NULL,\n    stock_maximo numeric(12,3),\n    afecto_igv character varying(1) NOT NULL,\n    es_perecible character varying(1) NOT NULL,\n    imagen character varying(200),\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.proveedor (\n    id_proveedor bigint NOT NULL,\n    id_empresa bigint,\n    id_persona bigint,\n    codigo_proveedor character varying(20),\n    contacto character varying(80),\n    telefono_contacto character varying(15),\n    email_contacto character varying(50),\n    dias_credito integer NOT NULL,\n    f_registro timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.provincia (\n    id_provincia bigint NOT NULL,\n    id_departamento bigint NOT NULL,\n    n_provincia character varying(30) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.rol (\n    id_rol bigint NOT NULL,\n    n_rol character varying(50) NOT NULL,\n    descripcion character varying(100),\n    nivel integer,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.rol_permiso (\n    id_rol_permiso bigint NOT NULL,\n    id_rol bigint NOT NULL,\n    id_permiso bigint NOT NULL,\n    concedido character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.tipo_identidad (\n    id_tipo_identidad bigint NOT NULL,\n    n_tipo_identidad character varying(20) NOT NULL,\n    abreviatura character varying(10),\n    longitud integer,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.tipo_movimiento_caja (\n    id_tipo_movimiento bigint NOT NULL,\n    n_tipo_movimiento character varying(30) NOT NULL,\n    abreviatura character varying(10),\n    signo character varying(1) NOT NULL,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.tipo_movimiento_inv (\n    id_tipo_movimiento_inv bigint NOT NULL,\n    n_tipo_movimiento character varying(30) NOT NULL,\n    abreviatura character varying(10),\n    signo character varying(1) NOT NULL,\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.tipo_usuario (\n    id_tipo_usuario bigint NOT NULL,\n    n_tipo_usuario character varying(50) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.unidad_medida (\n    id_unidad_medida bigint NOT NULL,\n    n_unidad_medida character varying(30) NOT NULL,\n    abreviatura character varying(10),\n    f_creacion timestamp without time zone,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.usuario (\n    id_usuario bigint NOT NULL,\n    id_tipo_usuario bigint NOT NULL,\n    id_empleado bigint,\n    logeo character varying(30) NOT NULL,\n    clave character varying(200) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.usuario_rol (\n    id_usuario_rol bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_rol bigint NOT NULL,\n    f_asignacion timestamp without time zone,\n    vigente character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.venta (\n    id_venta bigint NOT NULL,\n    id_cliente bigint NOT NULL,\n    id_usuario bigint NOT NULL,\n    id_apertura_caja bigint,\n    id_metodo_pago bigint NOT NULL,\n    f_venta timestamp without time zone NOT NULL,\n    sub_total numeric(12,2) NOT NULL,\n    igv numeric(12,2) NOT NULL,\n    descuento numeric(12,2) NOT NULL,\n    total numeric(12,2) NOT NULL,\n    t_pagado numeric(12,2) NOT NULL,\n    vuelto numeric(12,2) NOT NULL,\n    es_credito character varying(1) NOT NULL,\n    saldo numeric(12,2) NOT NULL,\n    tipo_documento character varying(11) NOT NULL,\n    situacion character varying(1) NOT NULL,\n    usu_cre character varying(30),\n    pc_cre character varying(30),\n    fec_cre timestamp without time zone,\n    usu_mod character varying(30),\n    pc_mod character varying(30),\n    fec_mod timestamp without time zone,\n    estado character varying(1) NOT NULL\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_arqueo_caja (\n    id_apertura_caja bigint,\n    n_caja character varying(50),\n    f_apertura timestamp without time zone,\n    f_cierre timestamp without time zone,\n    situacion character varying(1),\n    usuario_apertura character varying(30),\n    usuario_cierre character varying(30),\n    monto_inicial numeric(12,2),\n    total_ingresos numeric(12,2),\n    total_egresos numeric(12,2),\n    monto_sistema numeric(12,2),\n    monto_declarado numeric(12,2),\n    diferencia numeric(12,2)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_cuentas_por_cobrar (\n    id_cuenta bigint,\n    id_venta bigint,\n    f_emision timestamp without time zone,\n    f_vencimiento date,\n    monto_total numeric(12,2),\n    saldo numeric(12,2),\n    situacion character varying(1),\n    cliente text,\n    celular character varying(9),\n    dias_vencidos integer\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_kardex (\n    id_movimiento_inv bigint,\n    f_movimiento timestamp without time zone,\n    n_producto character varying(50),\n    n_almacen character varying(50),\n    n_tipo_movimiento character varying(30),\n    signo character varying(1),\n    cantidad numeric(12,3),\n    costo_unitario numeric(10,2),\n    stock_anterior numeric(12,3),\n    stock_nuevo numeric(12,3),\n    documento character varying(30),\n    observacion character varying(200),\n    usuario character varying(30)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_productos_mas_vendidos (\n    id_producto bigint,\n    n_producto character varying(50),\n    n_categoria_producto character varying(50),\n    cantidad_vendida numeric,\n    monto_vendidas numeric\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_productos_por_vencer (\n    id_lote bigint,\n    n_producto character varying(50),\n    n_lote character varying(30),\n    f_vencimiento date,\n    cantidad_actual numeric(12,3),\n    dias_restantes integer,\n    n_almacen character varying(50)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_stock_critico (\n    id_producto bigint,\n    codigo_barras character varying(30),\n    n_producto character varying(50),\n    n_categoria_producto character varying(50),\n    n_marca character varying(50),\n    stock_actual numeric(12,3),\n    stock_minimo numeric(12,3),\n    stock_maximo numeric(12,3),\n    cantidad_sugerida numeric,\n    p_compra numeric(10,2)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_ventas_detalle (\n    id_venta bigint,\n    f_venta timestamp without time zone,\n    tipo_documento character varying(11),\n    situacion character varying(1),\n    cliente character varying,\n    usuario character varying(30),\n    n_metodo_pago character varying(30),\n    n_producto character varying(50),\n    cantidad numeric(12,3),\n    precio_unitario numeric(10,2),\n    descuento numeric(10,2),\n    sub_total numeric(12,2),\n    total numeric(12,2)\n);"
+  },
+  {
+    "create_table_sql": "CREATE TABLE public.vw_ventas_diarias (\n    fecha date,\n    nro_ventas bigint,\n    sub_total numeric,\n    igv numeric,\n    total numeric,\n    total_credito numeric\n);"
+  }
+]
