@@ -10,9 +10,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalCompra = document.getElementById("modalNuevaCompra");
   const btnGuardarCompra = modalCompra.querySelector("#compra-modal-guardar");
   const tbodyCompras = document.querySelector("#tbody-ordenes-compra");
-  const selectProveedor = document.getElementById("compra-modal-proveedor");
+  const inputProveedor = document.getElementById("compra-modal-proveedor");
+  const inputProveedorId = document.getElementById("compra-modal-proveedor-id");
   const selectMetodoPago = document.getElementById("compra-modal-metodo-pago");
-  const selectProducto = document.getElementById("compra-modal-producto");
+  const inputProducto = document.getElementById("compra-modal-producto");
+  const inputProductoId = document.getElementById("compra-modal-producto-id");
   const inputCantidad = document.getElementById("compra-modal-cantidad");
   const inputCosto = document.getElementById("compra-modal-costo");
   const btnAgregar = document.getElementById("compra-modal-agregar-producto");
@@ -55,24 +57,66 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function llenarDatalist(datalist, items, idFn, textoFn) {
+    if (!datalist) return;
+    datalist.innerHTML = "";
+    items.forEach(it => {
+      const o = document.createElement("option");
+      o.value = textoFn(it);
+      o.dataset.id = idFn(it);
+      datalist.appendChild(o);
+    });
+  }
+
+  function setupSearchInput(input, hiddenId, items, idFn, textoFn) {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      const texto = input.value.trim();
+      const match = items.find(it => textoFn(it).toLowerCase().includes(texto.toLowerCase()));
+      if (match && textoFn(match).toLowerCase() === texto.toLowerCase()) {
+        hiddenId.value = idFn(match);
+      } else if (!texto) {
+        hiddenId.value = "";
+      }
+    });
+    input.addEventListener("blur", () => {
+      const texto = input.value.trim();
+      const match = items.find(it => textoFn(it) === texto);
+      if (match) {
+        hiddenId.value = idFn(match);
+      } else {
+        hiddenId.value = "";
+      }
+    });
+  }
+
   async function cargarDatosIniciales() {
     limpiarAlerta(alerta);
     try {
       const [prov, prod, mp] = await Promise.all([
-        api("GET", "/api/proveedores"),
-        api("GET", "/api/productos"),
-        api("GET", "/api/metodos-pago")
+        api("GET", "/api/proveedores").catch(e => { throw e; }),
+        api("GET", "/api/productos").catch(e => { throw e; }),
+        api("GET", "/api/metodos-pago").catch(e => { throw e; })
       ]);
       proveedores = prov || [];
       productos = prod || [];
       metodosPago = mp || [];
-      llenarSelect(selectProveedor, proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
       llenarSelect(selectMetodoPago, metodosPago, p => p.id, p => p.nombre);
-      llenarSelect(selectProducto, productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
+      llenarDatalist(document.getElementById("datalist-proveedores"), proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
+      llenarDatalist(document.getElementById("datalist-productos"), productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
+      setupSearchInput(inputProveedor, inputProveedorId, proveedores, p => p.id, p => p.nombrePersona + " (" + (p.nDocumento || "") + ")");
+      setupSearchInput(inputProducto, inputProductoId, productos, p => p.id, p => p.nombre + " - S/ " + (p.precioVenta || 0));
       await listarComprasDia();
       await listarProveedores();
     } catch (err) {
-      if (!irALogin(err)) mostrarAlerta(alerta, err.mensaje || "No se pudo cargar.");
+      console.error("Error cargando datos iniciales:", err);
+      if (!irALogin(err)) {
+        let msg = err.mensaje || "No se pudo cargar.";
+        if (err.codigo === 0) {
+          msg = "No se pudo conectar con el backend. ¿Está corriendo el servidor en " + API_BASE + "?";
+        }
+        mostrarAlerta(alerta, msg);
+      }
     }
   }
 
@@ -193,10 +237,12 @@ document.addEventListener("DOMContentLoaded", () => {
       carrito = [];
       renderCarrito();
       limpiarAlerta(alerta);
-      const mProv = document.getElementById("compra-modal-proveedor");
+      if (inputProveedor) inputProveedor.value = "";
+      if (inputProveedorId) inputProveedorId.value = "";
+      if (inputProducto) inputProducto.value = "";
+      if (inputProductoId) inputProductoId.value = "";
       const mDoc = document.getElementById("compra-modal-numero-documento");
       const mEstado = document.getElementById("compra-modal-estado");
-      if (mProv) mProv.selectedIndex = 0;
       if (mDoc) mDoc.value = "";
       if (mEstado) mEstado.value = "COMPLETADA";
     });
@@ -204,7 +250,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnAgregar) {
     btnAgregar.addEventListener("click", () => {
-      const idProd = selectProducto ? selectProducto.value : null;
+      const idProd = inputProductoId ? inputProductoId.value : null;
       const cantidad = inputCantidad ? parseInt(inputCantidad.value) : 0;
       const costo = inputCosto ? parseFloat(inputCosto.value) : 0;
       if (!idProd || !cantidad || cantidad <= 0) { mostrarAlerta(alerta, "Seleccione producto y cantidad válida."); return; }
@@ -224,6 +270,8 @@ document.addEventListener("DOMContentLoaded", () => {
           subtotal: costo * cantidad
         });
       }
+      if (inputProducto) inputProducto.value = "";
+      if (inputProductoId) inputProductoId.value = "";
       inputCantidad.value = 1;
       inputCosto.value = "";
       renderCarrito();
@@ -249,9 +297,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnGuardarCompra) {
     btnGuardarCompra.addEventListener("click", async () => {
-      limpiarAlerta(alerta);
-      const idProveedor = selectProveedor ? selectProveedor.value : null;
-      const idMetodoPago = selectMetodoPago ? selectMetodoPago.value : null;
+    limpiarAlerta(alerta);
+    const idProveedor = inputProveedorId ? inputProveedorId.value : null;
+    const idMetodoPago = selectMetodoPago ? selectMetodoPago.value : null;
       const numeroDocumento = document.getElementById("compra-modal-numero-documento") ? document.getElementById("compra-modal-numero-documento").value : "";
       const estado = document.getElementById("compra-modal-estado") ? document.getElementById("compra-modal-estado").value : "COMPLETADA";
       if (!idProveedor) { mostrarAlerta(alerta, "Seleccione un proveedor."); return; }

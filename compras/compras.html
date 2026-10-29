@@ -310,9 +310,16 @@
             <div class="row g-3 mb-3">
               <div class="col-md-4">
                 <label for="compra-modal-proveedor" class="form-label">Proveedor</label>
-                <select class="form-select" id="compra-modal-proveedor" required>
-                  <option value="" selected disabled>Seleccione un proveedor</option>
-                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="compra-modal-proveedor"
+                  list="datalist-proveedores"
+                  placeholder="Buscar proveedor..."
+                  required
+                />
+                <input type="hidden" id="compra-modal-proveedor-id" />
+                <datalist id="datalist-proveedores"></datalist>
               </div>
               <div class="col-md-3">
                 <label for="compra-modal-metodo-pago" class="form-label">Método de pago</label>
@@ -342,9 +349,16 @@
             <div class="row g-3 mb-3">
               <div class="col-md-3">
                 <label for="compra-modal-producto" class="form-label">Producto</label>
-                <select class="form-select" id="compra-modal-producto" required>
-                  <option value="" selected disabled>Seleccione un producto</option>
-                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="compra-modal-producto"
+                  list="datalist-productos"
+                  placeholder="Buscar producto..."
+                  required
+                />
+                <input type="hidden" id="compra-modal-producto-id" />
+                <datalist id="datalist-productos"></datalist>
               </div>
               <div class="col-md-2">
                 <label for="compra-modal-cantidad" class="form-label">Cantidad</label>
@@ -546,6 +560,7 @@
     <script src="../assets/theme.js"></script>
     <script src="../assets/inject-sidebar.js"></script>
     <script src="../assets/navegacion-persistente.js"></script>
+    <script src="../assets/pestanas.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>
     <script type="module" src="compras.js"></script>

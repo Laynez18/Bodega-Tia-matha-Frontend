@@ -13,9 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const modalVenta = document.getElementById("modalNuevaVenta");
   const btnGuardarVenta = modalVenta.querySelector("#venta-modal-guardar");
   const tbodyVentas = document.querySelector("#tbody-ventas-dia");
-  const selectCliente = document.getElementById("venta-modal-cliente");
+  const inputCliente = document.getElementById("venta-modal-cliente");
+  const inputClienteId = document.getElementById("venta-modal-cliente-id");
   const selectMetodoPago = document.getElementById("venta-modal-metodo-pago");
-  const selectProducto = document.getElementById("venta-modal-producto");
+  const inputProducto = document.getElementById("venta-modal-producto");
+  const inputProductoId = document.getElementById("venta-modal-producto-id");
   const inputCantidad = document.getElementById("venta-modal-cantidad");
   const btnAgregar = document.getElementById("venta-modal-agregar-producto");
   const btnLimpiar = document.getElementById("venta-modal-limpiar");
@@ -79,24 +81,66 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function llenarDatalist(datalist, items, idFn, textoFn) {
+    if (!datalist) return;
+    datalist.innerHTML = "";
+    items.forEach(it => {
+      const o = document.createElement("option");
+      o.value = textoFn(it);
+      o.dataset.id = idFn(it);
+      datalist.appendChild(o);
+    });
+  }
+
+  function setupSearchInput(input, hiddenId, items, idFn, textoFn) {
+    if (!input) return;
+    input.addEventListener("input", () => {
+      const texto = input.value.trim();
+      const match = items.find(it => textoFn(it).toLowerCase().includes(texto.toLowerCase()));
+      if (match && textoFn(match).toLowerCase() === texto.toLowerCase()) {
+        hiddenId.value = idFn(match);
+      } else if (!texto) {
+        hiddenId.value = "";
+      }
+    });
+    input.addEventListener("blur", () => {
+      const texto = input.value.trim();
+      const match = items.find(it => textoFn(it) === texto);
+      if (match) {
+        hiddenId.value = idFn(match);
+      } else {
+        hiddenId.value = "";
+      }
+    });
+  }
+
   async function cargarDatosIniciales() {
     limpiarAlerta(alertaVenta);
     try {
       const [cs, mp, ps] = await Promise.all([
-        api("GET", "/api/clientes"),
-        api("GET", "/api/metodos-pago"),
-        api("GET", "/api/productos")
+        api("GET", "/api/clientes").catch(e => { throw e; }),
+        api("GET", "/api/metodos-pago").catch(e => { throw e; }),
+        api("GET", "/api/productos").catch(e => { throw e; })
       ]);
       clientes = cs || [];
       metodosPago = mp || [];
       productos = ps || [];
-      llenarSelect(selectCliente, clientes, c => c.id, c => c.nombrePersona + " (" + (c.nDocumento || "") + ")");
       llenarSelect(selectMetodoPago, metodosPago, c => c.id, c => c.nombre);
-      llenarSelect(selectProducto, productos, c => c.id, c => c.nombre + " - S/ " + (c.precioVenta || 0));
+      llenarDatalist(document.getElementById("datalist-clientes"), clientes, c => c.id, c => c.nombrePersona + " (" + (c.nDocumento || "") + ")");
+      llenarDatalist(document.getElementById("datalist-productos"), productos, c => c.id, c => c.nombre + " - S/ " + (c.precioVenta || 0));
+      setupSearchInput(inputCliente, inputClienteId, clientes, c => c.id, c => c.nombrePersona + " (" + (c.nDocumento || "") + ")");
+      setupSearchInput(inputProducto, inputProductoId, productos, c => c.id, c => c.nombre + " - S/ " + (c.precioVenta || 0));
       await listarVentasDia();
       await listarComprobantes();
     } catch (err) {
-      if (!irALogin(err)) mostrarAlerta(alertaVenta, err.mensaje || "No se pudo cargar.");
+      console.error("Error cargando datos iniciales:", err);
+      if (!irALogin(err)) {
+        let msg = err.mensaje || "No se pudo cargar.";
+        if (err.codigo === 0) {
+          msg = "No se pudo conectar con el backend. ¿Está corriendo el servidor en " + API_BASE + "?";
+        }
+        mostrarAlerta(alertaVenta, msg);
+      }
     }
   }
 
@@ -196,10 +240,12 @@ document.addEventListener("DOMContentLoaded", () => {
       carrito = [];
       renderCarrito();
       limpiarAlerta(alertaVenta);
-      const mSelect = document.getElementById("venta-modal-cliente");
+      if (inputCliente) inputCliente.value = "";
+      if (inputClienteId) inputClienteId.value = "";
+      if (inputProducto) inputProducto.value = "";
+      if (inputProductoId) inputProductoId.value = "";
       const mDoc = document.getElementById("venta-modal-numero-documento");
       const mEstado = document.getElementById("venta-modal-estado");
-      if (mSelect) mSelect.selectedIndex = 0;
       if (mDoc) mDoc.value = "";
       if (mEstado) mEstado.value = "COMPLETADA";
     });
@@ -207,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (btnAgregar) {
     btnAgregar.addEventListener("click", () => {
-      const idProd = selectProducto ? selectProducto.value : null;
+      const idProd = inputProductoId ? inputProductoId.value : null;
       const cantidad = inputCantidad ? parseInt(inputCantidad.value) : 0;
       if (!idProd || !cantidad || cantidad <= 0) {
         mostrarAlerta(alertaVenta, "Seleccione producto y cantidad válida.");
@@ -228,6 +274,8 @@ document.addEventListener("DOMContentLoaded", () => {
           subtotal: producto.precioVenta * cantidad
         });
       }
+      if (inputProducto) inputProducto.value = "";
+      if (inputProductoId) inputProductoId.value = "";
       inputCantidad.value = 1;
       renderCarrito();
     });
@@ -253,7 +301,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnGuardarVenta) {
     btnGuardarVenta.addEventListener("click", async () => {
       limpiarAlerta(alertaVenta);
-      const idCliente = selectCliente ? selectCliente.value : null;
+      const idCliente = inputClienteId ? inputClienteId.value : null;
       const idMetodoPago = selectMetodoPago ? selectMetodoPago.value : null;
       const numeroDocumento = document.getElementById("venta-modal-numero-documento") ? document.getElementById("venta-modal-numero-documento").value : "";
       const estado = document.getElementById("venta-modal-estado") ? document.getElementById("venta-modal-estado").value : "COMPLETADA";

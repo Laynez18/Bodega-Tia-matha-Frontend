@@ -33,20 +33,41 @@
     });
   }
 
+  function obtenerUrlBase(url) {
+    return url.split('#')[0].split('?')[0];
+  }
+
+  function obtenerAncla(url) {
+    var partes = url.split('#');
+    return partes.length > 1 ? '#' + partes[1] : '';
+  }
+
   function actualizarActivo(url) {
-    var ruta = url.split('?')[0].split('/').pop();
     document.querySelectorAll('aside .nav-link').forEach(function (link) {
       var href = link.getAttribute('href');
       if (!href) return;
-      var coincide = href === '/' + ruta || href.endsWith('/' + ruta) || href === ruta;
+      var coincide = href === url;
       link.classList.toggle('active', coincide);
       link.setAttribute('aria-current', coincide ? 'page' : null);
     });
   }
 
+  function aplicarAncla(ancla) {
+    if (!ancla) return;
+    setTimeout(function () {
+      var btn = document.querySelector('button[data-bs-target="' + ancla + '"], a[data-bs-target="' + ancla + '"]');
+      if (btn) {
+        btn.click();
+      }
+      var el = document.querySelector(ancla);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+
   function navegar(url) {
-    if (!/\.html$/i.test(url)) return;
-    if (url === window.location.pathname + window.location.search) return;
+    var urlBase = obtenerUrlBase(url);
+    if (!/\.html$/i.test(urlBase)) return;
+    if (urlBase === window.location.pathname + window.location.search) return;
 
     // Guardar scroll del sidebar antes de navegar
     var asideActual = document.querySelector('aside');
@@ -54,7 +75,7 @@
       sessionStorage.setItem('mmSidebarScroll', asideActual.scrollTop);
     }
 
-    fetch(url, { headers: { 'X-Requested-With': 'fetch' } })
+    fetch(urlBase, { headers: { 'X-Requested-With': 'fetch' } })
       .then(function (res) {
         if (!res.ok) throw new Error('No se pudo cargar ' + url);
         return res.text();
@@ -98,6 +119,7 @@
 
         if (extraido.title) document.title = extraido.title;
         actualizarActivo(url);
+        aplicarAncla(obtenerAncla(url));
         history.pushState(null, '', url);
 
         window.dispatchEvent(new CustomEvent(EVENTO_CAMBIO, { detail: { url: url } }));
@@ -109,7 +131,8 @@
   }
 
   function inicializar() {
-    actualizarActivo(window.location.pathname);
+    actualizarActivo(window.location.pathname + window.location.search + window.location.hash);
+    aplicarAncla(window.location.hash);
 
     document.body.addEventListener('click', function (e) {
       var enlace = e.target.closest('aside a[href]');
@@ -123,7 +146,7 @@
     });
 
     window.addEventListener('popstate', function () {
-      navegar(window.location.pathname + window.location.search);
+      navegar(window.location.pathname + window.location.search + window.location.hash);
     });
   }
 

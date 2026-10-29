@@ -84,11 +84,12 @@
       });
     }
 
-    // Marcar link activo según la URL actual
-    var ruta = window.location.pathname.split('/').pop();
+    // Marcar link activo según la URL actual (solo el que coincide exactamente, incluida la pestaña)
+    var rutaActual = window.location.pathname + window.location.search + window.location.hash;
     contenedor.querySelectorAll('.nav-link').forEach(function(link) {
       var href = link.getAttribute('href');
-      if (href && href.endsWith(ruta)) {
+      if (!href) return;
+      if (href === rutaActual) {
         link.classList.add('active');
         link.setAttribute('aria-current', 'page');
       }

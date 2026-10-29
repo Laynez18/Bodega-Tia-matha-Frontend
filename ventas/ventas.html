@@ -308,9 +308,16 @@
             <div class="row g-3 mb-3">
               <div class="col-md-4">
                 <label for="venta-modal-cliente" class="form-label">Cliente</label>
-                <select class="form-select" id="venta-modal-cliente" required>
-                  <option value="" selected disabled>Seleccione un cliente</option>
-                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="venta-modal-cliente"
+                  list="datalist-clientes"
+                  placeholder="Buscar cliente..."
+                  required
+                />
+                <input type="hidden" id="venta-modal-cliente-id" />
+                <datalist id="datalist-clientes"></datalist>
               </div>
               <div class="col-md-3">
                 <label for="venta-modal-metodo-pago" class="form-label">Método de pago</label>
@@ -340,9 +347,16 @@
             <div class="row g-3 mb-3">
               <div class="col-md-4">
                 <label for="venta-modal-producto" class="form-label">Producto</label>
-                <select class="form-select" id="venta-modal-producto" required>
-                  <option value="" selected disabled>Seleccione un producto</option>
-                </select>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="venta-modal-producto"
+                  list="datalist-productos"
+                  placeholder="Buscar producto..."
+                  required
+                />
+                <input type="hidden" id="venta-modal-producto-id" />
+                <datalist id="datalist-productos"></datalist>
               </div>
               <div class="col-md-2">
                 <label for="venta-modal-cantidad" class="form-label">Cantidad</label>
@@ -489,6 +503,7 @@
     <script src="../assets/theme.js"></script>
     <script src="../assets/inject-sidebar.js"></script>
     <script src="../assets/navegacion-persistente.js"></script>
+    <script src="../assets/pestanas.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>
     <script type="module" src="ventas.js"></script>
