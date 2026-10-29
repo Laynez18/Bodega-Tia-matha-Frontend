@@ -11,7 +11,7 @@
     contenedor.style.minWidth = '250px';
     contenedor.style.flexShrink = '0';
 
-    var res = await fetch('assets/sidebar.html');
+    var res = await fetch('/assets/sidebar.html');
     if (!res.ok) throw new Error('No se pudo cargar sidebar.html');
     var html = await res.text();
     contenedor.innerHTML = html;
