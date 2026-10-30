@@ -12,21 +12,21 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
       rel="stylesheet"
     />
-        <link href="../assets/fonts.css" rel="stylesheet" />
-<link href="../assets/themes.css" rel="stylesheet" />
+    <link href="../assets/fonts.css" rel="stylesheet" />
+    <link href="../assets/themes.css" rel="stylesheet" />
     <link href="../assets/global.css" rel="stylesheet" />
-  <script>
-    (function () {
-      try {
-        if (localStorage.getItem('mm-theme') === 'oscuro') {
-          document.documentElement.setAttribute('data-theme', 'oscuro');
-        }
-      } catch (e) {}
-    })();
-  </script>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('mm-theme') === 'oscuro') {
+            document.documentElement.setAttribute('data-theme', 'oscuro');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <div class="d-flex">
+    <div class="d-flex vh-100 overflow-hidden">
       <!-- ============ SIDEBAR ============ -->
       <div id="sidebar-contenedor"></div>
 
@@ -147,7 +147,7 @@
       </div>
 
       <!-- ============ CONTENIDO ============ -->
-      <main class="flex-grow-1 min-width-0 p-3 p-md-4">
+      <main class="flex-grow-1 min-width-0 d-flex flex-column overflow-hidden p-3 p-md-4">
         <!-- Barra superior para móvil -->
         <header
           class="d-md-none d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 border-bottom mb-3"
@@ -167,7 +167,35 @@
         </header>
         <div class="d-flex align-items-center mb-4">
           <h4 class="mb-0">Reportes</h4>
-          
+        </div>
+
+        <!-- Filtros rápidos de fecha -->
+        <div class="card bg-light shadow-sm mb-3">
+          <div class="card-body py-2">
+            <div class="row g-3 align-items-center">
+              <div class="col-md-2">
+                <label class="form-label mb-0 small">Desde</label>
+                <input type="date" class="form-control form-control-sm" id="reporte-desde" />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label mb-0 small">Hasta</label>
+                <input type="date" class="form-control form-control-sm" id="reporte-hasta" />
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-outline-primary btn-sm w-100" id="btnAplicarFiltro">
+                  <i class="bi bi-filter me-1"></i>Aplicar
+                </button>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button class="btn btn-outline-secondary btn-sm w-100" id="btnLimpiarFiltro">
+                  <i class="bi bi-x-circle me-1"></i>Limpiar
+                </button>
+              </div>
+              <div class="col-md-4 text-end">
+                <span class="badge bg-info text-dark" id="badgeRegistros">0 registros</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Pestañas de secciones -->
@@ -175,13 +203,61 @@
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
+              id="tab-resumen"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-resumen"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-speedometer me-1"></i>Resumen General
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
               id="tab-ventas"
               data-bs-toggle="tab"
               data-bs-target="#pane-ventas"
               type="button"
               role="tab"
             >
-              Ventas
+              <i class="bi bi-basket me-1"></i>Ventas
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-compras"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-compras"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-truck me-1"></i>Compras
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-caja"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-caja"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-cash-coin me-1"></i>Caja
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-creditos"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-creditos"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-credit-card me-1"></i>Créditos
             </button>
           </li>
           <li class="nav-item" role="presentation">
@@ -193,20 +269,156 @@
               type="button"
               role="tab"
             >
-              Inventario
+              <i class="bi bi-box-seam me-1"></i>Inventario
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-empleados"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-empleados"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-people me-1"></i>Empleados
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="tab-auditoria"
+              data-bs-toggle="tab"
+              data-bs-target="#pane-auditoria"
+              type="button"
+              role="tab"
+            >
+              <i class="bi bi-journal-text me-1"></i>Auditoría
             </button>
           </li>
         </ul>
 
-        <div class="tab-content" id="tabReportesContenido">
+        <div class="tab-content border rounded shadow-sm bg-white p-3 flex-grow-1 overflow-auto" id="tabReportesContenido">
+          <!-- Resumen General -->
+          <div class="tab-pane fade show active" id="pane-resumen" role="tabpanel">
+            <div class="row g-3 mb-4">
+              <div class="col-md-3">
+                <div class="card text-bg-primary shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="mb-1">Total Ventas</h6>
+                        <p class="mb-0 fw-bold fs-4" id="resumen-total-ventas">S/ 0.00</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-currency-dollar fs-1 opacity-25"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card text-bg-success shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="mb-1">Ventas Realizadas</h6>
+                        <p class="mb-0 fw-bold fs-4" id="resumen-cantidad-ventas">0</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-bag-check fs-1 opacity-25"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card text-bg-info shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="mb-1">Total Compras</h6>
+                        <p class="mb-0 fw-bold fs-4" id="resumen-total-compras">S/ 0.00</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-truck fs-1 opacity-25"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card text-bg-warning shadow-sm">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <h6 class="mb-1">Créditos Pendientes</h6>
+                        <p class="mb-0 fw-bold fs-4" id="resumen-total-creditos">S/ 0.00</p>
+                      </div>
+                      <div class="align-self-center">
+                        <i class="bi bi-credit-card fs-1 opacity-25"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="card shadow-sm">
+                  <div class="card-header bg-white">
+                    <span>Ventas recientes</span>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle mb-0">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Comprobante</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody-resumen-ventas"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card shadow-sm">
+                  <div class="card-header bg-white">
+                    <span>Movimientos de caja recientes</span>
+                  </div>
+                  <div class="card-body p-0">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle mb-0">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Usuario</th>
+                            <th>Tipo</th>
+                            <th>Monto</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody-resumen-caja"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Reporte Ventas -->
-          <div class="tab-pane fade show active" id="pane-ventas" role="tabpanel">
+          <div class="tab-pane fade" id="pane-ventas" role="tabpanel">
             <div class="card shadow-sm">
-              <div
-                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
-              >
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
                 <span>Reporte de Ventas</span>
-                <button class="btn btn-primary btn-sm">
+                <button class="btn btn-primary btn-sm" id="btnExportarVentas">
                   <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
                 </button>
               </div>
@@ -221,32 +433,23 @@
                         <th>Cliente</th>
                         <th>Total</th>
                         <th>Método pago</th>
+                        <th>Estado</th>
+                        <th>Usuario</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td>02/09/2026</td>
-                        <td>B001-000123</td>
-                        <td>Cliente mostrador</td>
-                        <td>S/ 9.00</td>
-                        <td>Efectivo</td>
-                      </tr>
-                    </tbody>
+                    <tbody id="tbody-ventas"></tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Reporte Inventario -->
-          <div class="tab-pane fade" id="pane-inventario" role="tabpanel">
+          <!-- Reporte Compras -->
+          <div class="tab-pane fade" id="pane-compras" role="tabpanel">
             <div class="card shadow-sm">
-              <div
-                class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center"
-              >
-                <span>Reporte de Inventario</span>
-                <button class="btn btn-primary btn-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Compras</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarCompras">
                   <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
                 </button>
               </div>
@@ -256,42 +459,204 @@
                     <thead>
                       <tr>
                         <th>#</th>
-                        <th>Producto</th>
-                        <th>Stock</th>
-                        <th>Stock mínimo</th>
+                        <th>Fecha</th>
+                        <th>Documento</th>
+                        <th>Proveedor</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Usuario</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-compras"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporte Caja -->
+          <div class="tab-pane fade" id="pane-caja" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Caja</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarCaja">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Fecha apertura</th>
+                        <th>Fecha cierre</th>
+                        <th>Usuario</th>
+                        <th>Monto inicial</th>
                         <th>Estado</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="tbody-caja"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporte Créditos -->
+          <div class="tab-pane fade" id="pane-creditos" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Créditos (Cuentas por cobrar)</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarCreditos">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
                       <tr>
-                        <td>1</td>
-                        <td>Arroz 1kg</td>
-                        <td>50</td>
-                        <td>10</td>
-                        <td>
-                          <span class="badge text-bg-success">Óptimo</span>
-                        </td>
+                        <th>#</th>
+                        <th>Fecha</th>
+                        <th>Cliente</th>
+                        <th>Venta #</th>
+                        <th>Total</th>
+                        <th>Saldo pendiente</th>
+                        <th>Estado</th>
                       </tr>
+                    </thead>
+                    <tbody id="tbody-creditos"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporte Inventario -->
+          <div class="tab-pane fade" id="pane-inventario" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Inventario (Stock y Kardex)</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarInventario">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
+                </button>
+              </div>
+              <div class="card-body">
+                <ul class="nav nav-tabs mb-3">
+                  <li class="nav-item">
+                    <button class="nav-link active" id="tab-stock" data-bs-toggle="tab" data-bs-target="#pane-stock-reporte" type="button">Stock actual</button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link" id="tab-kardex" data-bs-toggle="tab" data-bs-target="#pane-kardex-reporte" type="button">Kardex / Movimientos</button>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane fade show active" id="pane-stock-reporte" role="tabpanel">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Stock</th>
+                            <th>Stock mínimo</th>
+                            <th>Estado</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody-stock"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="pane-kardex-reporte" role="tabpanel">
+                    <div class="table-responsive">
+                      <table class="table table-hover align-middle">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Fecha</th>
+                            <th>Producto</th>
+                            <th>Tipo movimiento</th>
+                            <th>Entrada</th>
+                            <th>Salida</th>
+                            <th>Stock nuevo</th>
+                          </tr>
+                        </thead>
+                        <tbody id="tbody-kardex"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporte Empleados -->
+          <div class="tab-pane fade" id="pane-empleados" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Empleados</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarEmpleados">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
                       <tr>
-                        <td>2</td>
-                        <td>Leche Gloria</td>
-                        <td>5</td>
-                        <td>15</td>
-                        <td>
-                          <span class="badge text-bg-danger">Bajo</span>
-                        </td>
+                        <th>#</th>
+                        <th>Documento</th>
+                        <th>Nombre</th>
+                        <th>Cargo</th>
+                        <th>Turno</th>
+                        <th>Celular</th>
+                        <th>Estado</th>
                       </tr>
-                    </tbody>
+                    </thead>
+                    <tbody id="tbody-empleados"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reporte Auditoría -->
+          <div class="tab-pane fade" id="pane-auditoria" role="tabpanel">
+            <div class="card shadow-sm">
+              <div class="card-header bg-white d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <span>Reporte de Auditoría (Registro de acciones)</span>
+                <button class="btn btn-primary btn-sm" id="btnExportarAuditoria">
+                  <i class="bi bi-file-earmark-arrow-down me-1"></i>Exportar
+                </button>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Fecha y hora</th>
+                        <th>Usuario</th>
+                        <th>Módulo</th>
+                        <th>Acción</th>
+                        <th>Detalle</th>
+                        <th>IP / Equipo</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tbody-auditoria"></tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
-</main>
+      </main>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <!-- Modal Configuración -->
     <div
       class="modal fade"
@@ -353,12 +718,9 @@
     <script src="../assets/inject-sidebar.js"></script>
     <script src="../assets/navegacion-persistente.js"></script>
     <script src="../assets/pestanas.js"></script>
-  
     <script>
       // El acordeón se gestiona desde assets/inject-sidebar.js
     </script>
-    
-    
     <script type="module" src="reportes.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>

@@ -56,17 +56,38 @@ function llenarSelect(select, items, catalogo) {
     select.appendChild(opcion);
     tieneOpciones = true;
   });
-  // Fallback por defecto si el backend no devolvió tipos de identidad
-  if (!tieneOpciones && catalogo.select === "empleado-tipo-doc") [
-    { id: 1, texto: "DNI" },
-    { id: 2, texto: "Carnet de Extranjería" },
-    { id: 3, texto: "Pasaporte" },
-  ].forEach((o) => {
-    const opcion = document.createElement("option");
-    opcion.value = o.id;
-    opcion.textContent = o.texto;
-    select.appendChild(opcion);
-  });
+  // Fallback por defecto si el backend no devolvió opciones
+  if (!tieneOpciones) {
+    if (catalogo.select === "empleado-tipo-doc") {
+      [{ id: 1, texto: "DNI" }, { id: 2, texto: "Carnet de Extranjería" }, { id: 3, texto: "Pasaporte" }].forEach((o) => {
+        const opcion = document.createElement("option");
+        opcion.value = o.id;
+        opcion.textContent = o.texto;
+        select.appendChild(opcion);
+      });
+    } else if (catalogo.select === "empleado-distrito") {
+      ["ICA", "PARCONA", "LA TINGUINA", "SUBTANJALLA", "PUEBLO NUEVO"].forEach((nombre, i) => {
+        const opcion = document.createElement("option");
+        opcion.value = i + 1;
+        opcion.textContent = nombre;
+        select.appendChild(opcion);
+      });
+    } else if (catalogo.select === "empleado-cargo") {
+      ["ADMINISTRADOR", "CAJERO", "ALMACENERO"].forEach((nombre, i) => {
+        const opcion = document.createElement("option");
+        opcion.value = i + 1;
+        opcion.textContent = nombre;
+        select.appendChild(opcion);
+      });
+    } else if (catalogo.select === "empleado-contrato") {
+      ["PLAZO FIJO", "PLAZO INDETERMINADO", "POR HORAS"].forEach((nombre, i) => {
+        const opcion = document.createElement("option");
+        opcion.value = i + 1;
+        opcion.textContent = nombre;
+        select.appendChild(opcion);
+      });
+    }
+  }
 }
 
 async function cargarCatalogo(catalogo) {
