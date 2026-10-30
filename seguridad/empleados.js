@@ -48,10 +48,23 @@ function irALogin(err) {
 function llenarSelect(select, items, catalogo) {
   const placeholder = select.querySelector('option[value=""]');
   select.replaceChildren(placeholder);
+  let tieneOpciones = false;
   items.forEach((item) => {
     const opcion = document.createElement("option");
     opcion.value = leer(item, catalogo.id);
     opcion.textContent = aTexto(leer(item, catalogo.texto));
+    select.appendChild(opcion);
+    tieneOpciones = true;
+  });
+  // Fallback por defecto si el backend no devolvió tipos de identidad
+  if (!tieneOpciones && catalogo.select === "empleado-tipo-doc") [
+    { id: 1, texto: "DNI" },
+    { id: 2, texto: "Carnet de Extranjería" },
+    { id: 3, texto: "Pasaporte" },
+  ].forEach((o) => {
+    const opcion = document.createElement("option");
+    opcion.value = o.id;
+    opcion.textContent = o.texto;
     select.appendChild(opcion);
   });
 }
