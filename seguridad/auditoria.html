@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auditoría - Seguridad - Mini Market</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="../assets/fonts.css" rel="stylesheet" />
+    <link href="../assets/themes.css" rel="stylesheet" />
+    <link href="../assets/global.css" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem("mm-theme") === "oscuro") {
+            document.documentElement.setAttribute("data-theme", "oscuro");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="d-flex vh-100 overflow-hidden">
+      <!-- ============ SIDEBAR ============ -->
+      <div id="sidebar-contenedor"></div>
+
+      <!-- ============ MENÚ MÓVIL (offcanvas) ============ -->
+      <div
+        class="offcanvas offcanvas-start bg-dark text-white"
+        tabindex="-1"
+        id="menuMovil"
+        aria-labelledby="menuMovilLabel"
+        style="width: 250px"
+      >
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title text-white" id="menuMovilLabel">
+            <i class="bi bi-shop me-2"></i>Mini Market
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="offcanvas"
+            aria-label="Cerrar"
+          ></button>
+        </div>
+        <hr class="my-0" />
+        <div class="offcanvas-body d-flex flex-column">
+          <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+              <a href="../inicio/inicio.html" class="nav-link text-white">
+                <i class="bi bi-house me-2"></i>
+                Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="seguridad.html" class="nav-link text-white">
+                <i class="bi bi-shield-lock me-2"></i>
+                Seguridad
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="usuarios.html" class="nav-link text-white">
+                <i class="bi bi-person me-2"></i>
+                Usuarios
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="roles.html" class="nav-link text-white">
+                <i class="bi bi-person-badge me-2"></i>
+                Roles
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="permisos.html" class="nav-link text-white">
+                <i class="bi bi-key me-2"></i>
+                Permisos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="auditoria.html" class="nav-link active text-white" aria-current="page">
+                <i class="bi bi-journal-text me-2"></i>
+                Auditoría
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="empleados.html" class="nav-link text-white">
+                <i class="bi bi-people me-2"></i>
+                Empleados
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../mantenimiento/mantenimiento.html" class="nav-link text-white">
+                <i class="bi bi-gear me-2"></i>
+                Mantenimiento
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../compras/compras.html" class="nav-link text-white">
+                <i class="bi bi-truck me-2"></i>
+                Compras
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../inventario/inventario.html" class="nav-link text-white">
+                <i class="bi bi-box-seam me-2"></i>
+                Inventario
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../ventas/ventas.html" class="nav-link text-white">
+                <i class="bi bi-basket me-2"></i>
+                Ventas
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../creditos/creditos.html" class="nav-link text-white">
+                <i class="bi bi-hand-index-thumb me-2"></i>
+                Créditos
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../caja/caja.html" class="nav-link text-white">
+                <i class="bi bi-cash-coin me-2"></i>
+                Caja
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="../reportes/reportes.html" class="nav-link text-white">
+                <i class="bi bi-bar-chart me-2"></i>
+                Reportes
+              </a>
+            </li>
+          </ul>
+          <hr />
+          <div class="dropdown">
+            <a
+              href="#"
+              class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person-circle fs-4 me-2"></i>
+              <strong>ADMIN</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li>
+                <a
+                  class="dropdown-item"
+                  href="#"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalConfiguracion"
+                  ><i class="bi bi-gear me-2"></i>Configuración</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="#"
+                  ><i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ CONTENIDO ============ -->
+      <main class="flex-grow-1 min-width-0 d-flex flex-column overflow-hidden p-3 p-md-4">
+        <!-- Barra superior para móvil -->
+        <header
+          class="d-md-none d-flex flex-wrap justify-content-between align-items-center gap-2 p-2 border-bottom mb-3"
+        >
+          <button
+            class="btn btn-dark"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#menuMovil"
+          >
+            <i class="bi bi-list"></i>
+            Menú
+          </button>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-semibold">Mini Market</span>
+            <i class="bi bi-person-circle fs-4 text-secondary"></i>
+          </div>
+        </header>
+
+        <div class="d-flex align-items-center mb-4">
+          <h4 class="mb-0">Seguridad · Auditoría</h4>
+        </div>
+
+        <div class="card shadow-sm">
+          <div class="card-header bg-white">
+            <span>Registro de Auditoria</span>
+          </div>
+          <div class="card-body">
+            <div class="row g-3 mb-3">
+              <div class="col-md-3">
+                <label class="form-label" for="auditoriaUsuario"
+                  >Usuario</label
+                >
+                <select class="form-select" id="auditoriaUsuario">
+                  <option value="">Todos los usuarios</option>
+                  <option>admin</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="auditoriaModulo"
+                  >Modulo</label
+                >
+                <select class="form-select" id="auditoriaModulo">
+                  <option value="">Todos los modulos</option>
+                  <option>Seguridad</option>
+                  <option>Inventario</option>
+                  <option>Ventas</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="auditoriaDesde">Desde</label>
+                <input
+                  class="form-control"
+                  id="auditoriaDesde"
+                  type="date"
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="auditoriaHasta">Hasta</label>
+                <input
+                  class="form-control"
+                  id="auditoriaHasta"
+                  type="date"
+                />
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Fecha y hora</th>
+                    <th>Usuario</th>
+                    <th>Modulo</th>
+                    <th>Accion</th>
+                    <th>Detalle</th>
+                    <th>IP / Equipo</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-auditoria">
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">
+                      <i class="bi bi-hourglass-split fs-3 me-1"></i>
+                      Cargando auditoría...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Modal Configuración (compartido) -->
+    <div
+      class="modal fade"
+      id="modalConfiguracion"
+      tabindex="-1"
+      aria-labelledby="modalConfiguracionLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalConfiguracionLabel">
+              <i class="bi bi-gear me-2"></i>Configuración
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Cerrar"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <h6 class="fw-bold mb-3">Apariencia</h6>
+            <p class="text-muted small">Selecciona el tema del sistema.</p>
+            <div class="row g-3">
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="claro"
+                >
+                  <i class="bi bi-brightness-high-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Claro</div>
+                  <small class="text-muted">Tema predeterminado</small>
+                </button>
+              </div>
+              <div class="col-6">
+                <button
+                  type="button"
+                  class="card tema-opcion p-3 text-center"
+                  data-theme-option="oscuro"
+                >
+                  <i class="bi bi-moon-stars-fill fs-3 mb-2"></i>
+                  <div class="fw-semibold">Oscuro</div>
+                  <small class="text-muted">Reduce el brillo</small>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="../assets/theme.js"></script>
+    <script src="../assets/inject-sidebar.js"></script>
+    <script src="../assets/navegacion-persistente.js"></script>
+    <script src="../assets/pestanas.js"></script>
+    <script>
+      // El acordeón se gestiona desde assets/inject-sidebar.js
+    </script>
+    <script type="module" src="../assets/sesion.js"></script>
+    <script type="module" src="../assets/verificar-sesion.js"></script>
+  </body>
+</html>

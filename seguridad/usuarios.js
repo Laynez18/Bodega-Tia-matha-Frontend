@@ -3,7 +3,7 @@ import { api, tieneCsrf, yo } from "../login/login.js";
 const modal = document.getElementById("modalNuevoUsuario");
 const form = modal.querySelector("form");
 const btnGuardar = modal.querySelector(".modal-footer .btn-primary");
-const tbody = document.querySelector("#pane-usuarios tbody");
+const tbody = document.getElementById("tbody-usuarios");
 const selectTipo = document.getElementById("usuario-tipo");
 const selectEmpleado = document.getElementById("usuario-empleado");
 const contenedorRoles = document.getElementById("usuario-roles");

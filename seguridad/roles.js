@@ -1,6 +1,6 @@
 import { api, tieneCsrf, yo } from "../login/login.js";
 
-const tbody = document.querySelector("#pane-roles tbody");
+const tbody = document.getElementById("tbody-roles");
 const modal = document.getElementById("modalNuevoRol");
 const form = modal.querySelector("form");
 const btnGuardar = modal.querySelector(".modal-footer .btn-primary");
