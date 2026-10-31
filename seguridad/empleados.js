@@ -320,16 +320,34 @@ function convertirFecha(fecha) {
 async function constatarDni() {
   const dni = document.getElementById("empleado-documento").value.trim();
   if (!dni) { mostrarError("Ingrese un DNI para constatar."); return; }
+
+  const textoOriginal = btnConstatarDni.innerHTML;
+  btnConstatarDni.disabled = true;
+  btnConstatarDni.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Consultando...';
+
   try {
     const data = await api("GET", "/api/personas/consultar-dni/" + encodeURIComponent(dni));
     if (!data || !data.success || !data.datos) throw new Error(data && data.mensaje ? data.mensaje : "No se encontraron datos para ese DNI.");
     const d = data.datos;
-    document.getElementById("empleado-nombre").value = d.nombre || "";
+    document.getElementById("empleado-nombre").value = d.nombres || "";
     document.getElementById("empleado-ap-paterno").value = d.apellidoPaterno || "";
     document.getElementById("empleado-ap-materno").value = d.apellidoMaterno || "";
+    document.getElementById("empleado-nacimiento").value = convertirFecha(d.fechaNacimiento) || "";
+    document.getElementById("empleado-genero").value = d.genero || "";
+    document.getElementById("empleado-direccion").value = (d.domiciliado && d.domiciliado.direccion) || "";
+
+    const selectDistrito = document.getElementById("empleado-distrito");
+    if (d.domiciliado && d.domiciliado.distrito) {
+      const opcion = Array.from(selectDistrito.options).find((o) => o.textContent.toUpperCase().includes(d.domiciliado.distrito.toUpperCase()));
+      if (opcion) selectDistrito.value = opcion.value;
+    }
+
     limpiarError();
   } catch (err) {
     mostrarError(err.mensaje || "No se pudo constatar el DNI.");
+  } finally {
+    btnConstatarDni.disabled = false;
+    btnConstatarDni.innerHTML = textoOriginal;
   }
 }
 
