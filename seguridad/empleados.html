@@ -543,6 +543,32 @@
               </div>
             </div>
           </div>
+          <hr class="my-4" />
+          <h6 class="fw-bold mb-3">Constatar Documento (DNI / RUC)</h6>
+          <p class="text-muted small">Consulta datos en Factiliza.</p>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">DNI</label>
+              <input type="text" class="form-control" id="cfg-dni" maxlength="8" placeholder="Ej: 71813429" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button type="button" class="btn btn-primary w-100" id="btnCfgConstatarDni">
+                <i class="bi bi-search me-1"></i>Consultar DNI
+              </button>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">RUC</label>
+              <input type="text" class="form-control" id="cfg-ruc" maxlength="11" placeholder="Ej: 20552103816" />
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <button type="button" class="btn btn-primary w-100" id="btnCfgConstatarRuc">
+                <i class="bi bi-search me-1"></i>Consultar RUC
+              </button>
+            </div>
+            <div class="col-12 mt-3">
+              <div id="cfgResultado" class="p-3 border rounded bg-light" style="display:none;"></div>
+            </div>
+          </div>
           <div class="modal-footer">
             <button
               type="button"
@@ -564,6 +590,7 @@
       // El acordeón se gestiona desde assets/inject-sidebar.js
     </script>
     <script type="module" src="./empleados.js"></script>
+    <script type="module" src="../assets/constatar-documento.js"></script>
     <script type="module" src="../assets/sesion.js"></script>
     <script type="module" src="../assets/verificar-sesion.js"></script>
   </body>
