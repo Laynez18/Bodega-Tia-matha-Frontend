@@ -327,18 +327,18 @@ async function constatarDni() {
 
   try {
     const data = await api("GET", "/api/personas/consultar-dni/" + encodeURIComponent(dni));
-    if (!data || !data.success || !data.datos) throw new Error(data && data.mensaje ? data.mensaje : "No se encontraron datos para ese DNI.");
-    const d = data.datos;
+    if (!data || !data.success || !data.data) throw new Error(data && data.message ? data.message : "No se encontraron datos para ese DNI.");
+    const d = data.data;
     document.getElementById("empleado-nombre").value = d.nombres || "";
     document.getElementById("empleado-ap-paterno").value = d.apellidoPaterno || "";
     document.getElementById("empleado-ap-materno").value = d.apellidoMaterno || "";
     document.getElementById("empleado-nacimiento").value = convertirFecha(d.fechaNacimiento) || "";
-    document.getElementById("empleado-genero").value = d.genero || "";
-    document.getElementById("empleado-direccion").value = (d.domiciliado && d.domiciliado.direccion) || "";
+    document.getElementById("empleado-genero").value = d.sexo || "";
+    document.getElementById("empleado-direccion").value = d.direccion || "";
 
     const selectDistrito = document.getElementById("empleado-distrito");
-    if (d.domiciliado && d.domiciliado.distrito) {
-      const opcion = Array.from(selectDistrito.options).find((o) => o.textContent.toUpperCase().includes(d.domiciliado.distrito.toUpperCase()));
+    if (d.distrito) {
+      const opcion = Array.from(selectDistrito.options).find((o) => o.textContent.toUpperCase().includes(d.distrito.toUpperCase()));
       if (opcion) selectDistrito.value = opcion.value;
     }
 
